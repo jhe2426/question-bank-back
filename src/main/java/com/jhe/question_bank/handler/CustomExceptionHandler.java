@@ -3,6 +3,7 @@ package com.jhe.question_bank.handler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -24,6 +25,12 @@ public class CustomExceptionHandler {
     
     @ExceptionHandler(CsrfException.class)
     public ResponseEntity<ResponseDto> csrfExceptionHandler(CsrfException exception) {
+        exception.printStackTrace();
+        return ResponseDto.authenticationFail();
+    }
+
+    @ExceptionHandler(MissingRequestCookieException.class)
+    public ResponseEntity<ResponseDto> cookieValidationExceptionHandler(MissingRequestCookieException exception) {
         exception.printStackTrace();
         return ResponseDto.authenticationFail();
     }

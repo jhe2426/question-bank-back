@@ -9,6 +9,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -18,6 +19,8 @@ import io.jsonwebtoken.security.Keys;
 public class JwtProvider {
     @Value("${jwt.secret}")
     private String secretKey;
+    private static final String ACCESS = "access";
+    private static final String REFRESH = "refresh";
 
     public String createAccessToken(String userId) {
 
@@ -32,6 +35,7 @@ public class JwtProvider {
             accessToken = Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setSubject(userId)
+                .claim("type", ACCESS)
                 .setIssuedAt(new Date())
                 .setExpiration(expiration)
                 .compact();
@@ -56,6 +60,7 @@ public class JwtProvider {
             refreshToken = Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setSubject(userId)
+                .claim("type", REFRESH)
                 .setIssuedAt(new Date())
                 .setExpiration(expiration)
                 .compact();
@@ -67,7 +72,7 @@ public class JwtProvider {
         return refreshToken;
     }
 
-    public String validate(String jwt) {
+    public String validateAccessToken(String jwt) {
 
         String userId = null;
 
@@ -75,12 +80,46 @@ public class JwtProvider {
 
         try {
 
-            userId = Jwts.parserBuilder()
+            Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(jwt)
-                .getBody()
-                .getSubject();
+                .getBody();
+            if (claims == null) return null;
+
+            String type = claims.get("type", String.class);
+            boolean isAccessToken = ACCESS.equals(type);
+            if (!isAccessToken) return null;
+
+            userId = claims.getSubject();
+            
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return userId;
+    }
+
+    public String validateRefreshToken(String jwt) {
+
+        String userId = null;
+
+        Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+
+        try {
+
+            Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody();
+            if (claims == null) return null;
+
+            String type = claims.get("type", String.class);
+            boolean isRefreshToken = REFRESH.equals(type);
+            if (!isRefreshToken) return null;
+
+            userId = claims.getSubject();
             
         } catch (Exception exception) {
             exception.printStackTrace();

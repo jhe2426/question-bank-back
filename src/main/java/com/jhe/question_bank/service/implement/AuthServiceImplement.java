@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 import com.jhe.question_bank.common.dto.request.auth.SignInRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.SignInResponseDto;
+import com.jhe.question_bank.common.dto.response.auth.AccessTokenRefreshResponseDto;
 import com.jhe.question_bank.common.entity.UserEntity;
 import com.jhe.question_bank.provider.JwtProvider;
 import com.jhe.question_bank.repository.UserRepository;
 import com.jhe.question_bank.service.AuthService;
+import com.jhe.question_bank.store.RefreshTokenStore;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +25,7 @@ public class AuthServiceImplement implements AuthService {
 
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
+    private final RefreshTokenStore refreshTokenStore;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
@@ -46,12 +49,39 @@ public class AuthServiceImplement implements AuthService {
             accessToken = jwtProvider.createAccessToken(userId);
             refreshToken = jwtProvider.createRefreshToken(userId);
             csrfToken = UUID.randomUUID().toString();
+
+            refreshTokenStore.save(userId, refreshToken);
             
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
         }
         return SignInResponseDto.success(accessToken, refreshToken, csrfToken);
+    }
+
+    @Override
+    public ResponseEntity<? super AccessTokenRefreshResponseDto> refreshAccessToken(String refreshToken) {
+        
+        String accessToken = null;
+
+        try {
+
+            String userId = jwtProvider.validateRefreshToken(refreshToken);
+            if (userId == null) return ResponseDto.authenticationFail();
+
+            boolean isMatched = refreshTokenStore.matches(userId, refreshToken);
+            if (!isMatched) return ResponseDto.authenticationFail();
+
+            boolean existUser = userRepository.existsById(userId);
+            if (!existUser) return ResponseDto.authenticationFail();
+
+            accessToken = jwtProvider.createAccessToken(userId);
+            
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return AccessTokenRefreshResponseDto.success(accessToken);
     }
     
 }
