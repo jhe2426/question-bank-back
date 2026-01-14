@@ -1,5 +1,6 @@
 package com.jhe.question_bank.config;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,15 +11,29 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.jhe.question_bank.common.constant.RequestPattern;
+import com.jhe.question_bank.filter.JwtAuthenticationFilter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
     
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
     protected SecurityFilterChain configure(HttpSecurity security) throws Exception {
         
@@ -30,9 +45,13 @@ public class WebSecurityConfig {
             .csrf(CsrfConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(request -> request
-               .requestMatchers("/api/v1/auth", "/api/v1/auth/**").permitAll()
+               .requestMatchers(RequestPattern.AUTH_API, RequestPattern.AUTH_API + "/**").permitAll()
                .anyRequest().authenticated() 
-            );
+            )
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint(new AuthenticationFailEntryPoint())
+            )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return security.build();
     }
@@ -42,7 +61,7 @@ public class WebSecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         ArrayList<String> allowedOriginPatterns = new ArrayList<>();
-        allowedOriginPatterns.add("http://localhost:3000");
+        allowedOriginPatterns.add("https://localhost:3000");
         configuration.setAllowedOrigins(allowedOriginPatterns);
 
         ArrayList<String> allowedHttpMethods = new ArrayList<>();
@@ -60,6 +79,21 @@ public class WebSecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         
         return source;
+    }
+
+}
+
+class AuthenticationFailEntryPoint implements AuthenticationEntryPoint {
+
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+
+        authException.printStackTrace();
+
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write("{ \"code\": \"AF\", \"message\": \"Authentication failed.\" }");
+        
     }
 
 }
