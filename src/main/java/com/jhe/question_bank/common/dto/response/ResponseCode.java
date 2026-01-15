@@ -8,6 +8,7 @@ public interface ResponseCode {
     String AUTHENTICATION_FAIL = "AF";
     String SIGN_IN_FAIL = "SF";
 
+    String SERVER_ERROR = "SE";
     String DATABASE_ERROR = "DBE";
     String REFRESH_TOKEN_OPERATION_FAIL = "ROF";
 }

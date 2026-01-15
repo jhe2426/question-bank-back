@@ -29,4 +29,24 @@ public class AuthCookieProvider {
             .maxAge(Duration.ofDays(1))
             .build();
     }
+
+    public ResponseCookie deleteRefreshTokenCookie() {
+        return ResponseCookie.from("refreshToken", "")
+            .httpOnly(true)
+            .secure(true)
+            .sameSite("Strict")
+            .path(RequestPattern.AUTH_API)
+            .maxAge(0)
+            .build();
+    }
+
+    public ResponseCookie deleteCsrfTokenCookie() {
+        return ResponseCookie.from("csrfToken", "")
+            .httpOnly(false)
+            .secure(true)
+            .sameSite("Strict")
+            .path("/")
+            .maxAge(0)
+            .build();
+    }
 }

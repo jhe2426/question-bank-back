@@ -16,10 +16,17 @@ public class RefreshTokenStore {
     private final StringRedisTemplate redisTemplate;
     private final Duration REFRESH_TOKEN_EXPIRE = Duration.ofDays(1);
 
+    private static final String PREFIX = "refresh:";
+
+    private String getKey(String userId) {
+        return PREFIX + userId;
+    }
+
     public void save(String userId, String refreshToken) {
 
         try {
-            redisTemplate.opsForValue().set("refresh:" + userId, refreshToken, REFRESH_TOKEN_EXPIRE);
+            String key = getKey(userId);
+            redisTemplate.opsForValue().set(key, refreshToken, REFRESH_TOKEN_EXPIRE);
         } catch (Exception exception) {
             exception.printStackTrace();
             throw new RedisStorageException();
@@ -29,8 +36,8 @@ public class RefreshTokenStore {
 
     public boolean matches(String userId, String refreshToken) {
         try {
-
-            String stored = redisTemplate.opsForValue().get("refresh:" + userId);
+            String key = getKey(userId);
+            String stored = redisTemplate.opsForValue().get(key);
             boolean isRefreshTokenMatched = refreshToken.equals(stored);
             return isRefreshTokenMatched;
             
@@ -40,4 +47,13 @@ public class RefreshTokenStore {
         }
     }
 
+    public void delete(String userId) {
+        try {
+            String key = getKey(userId);
+            redisTemplate.delete(key);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            throw new RedisStorageException();
+        }
+    }
 }

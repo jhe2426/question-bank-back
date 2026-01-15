@@ -2,6 +2,7 @@ package com.jhe.question_bank.service.implement;
 
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.jhe.question_bank.common.dto.request.auth.SignInRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
-import com.jhe.question_bank.common.dto.response.auth.SignInResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.AccessTokenRefreshResponseDto;
+import com.jhe.question_bank.common.dto.response.auth.SignInResponseDto;
 import com.jhe.question_bank.common.entity.UserEntity;
 import com.jhe.question_bank.provider.JwtProvider;
 import com.jhe.question_bank.repository.UserRepository;
@@ -79,9 +80,23 @@ public class AuthServiceImplement implements AuthService {
             
         } catch (Exception exception) {
             exception.printStackTrace();
-            return ResponseDto.databaseError();
+            return ResponseDto.serverError();
         }
         return AccessTokenRefreshResponseDto.success(accessToken);
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> logout(String userId) {
+        try {
+
+            refreshTokenStore.delete(userId);
+            
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.serverError();
+        }
+        
+        return ResponseDto.success(HttpStatus.OK);
     }
     
 }

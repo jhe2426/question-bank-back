@@ -1,5 +1,6 @@
 package com.jhe.question_bank.common.dto.response;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -23,6 +24,17 @@ public class ResponseDto {
         return ResponseEntity.status(status).body(body);
     }
 
+    public static <T> ResponseEntity<T> successWithCookies(
+        T body,
+        String refreshCookie,
+        String csrfCookie
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.SET_COOKIE, refreshCookie)
+                .header(HttpHeaders.SET_COOKIE, csrfCookie)
+                .body(body);
+    }
+
     public static ResponseEntity<ResponseDto> validationFail() {
         ResponseDto body = new ResponseDto(ResponseCode.VALIDATION_FAIL, ResponseMessage.VALIDATION_FAIL);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
@@ -36,6 +48,11 @@ public class ResponseDto {
     public static ResponseEntity<ResponseDto> signInFail() {
         ResponseDto body = new ResponseDto(ResponseCode.SIGN_IN_FAIL, ResponseMessage.SIGN_IN_FAIL);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
+
+    public static ResponseEntity<ResponseDto> serverError() {
+        ResponseDto body = new ResponseDto(ResponseCode.SERVER_ERROR, ResponseMessage.SERVER_ERROR);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
     public static ResponseEntity<ResponseDto> databaseError() {

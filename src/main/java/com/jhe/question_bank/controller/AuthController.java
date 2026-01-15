@@ -1,8 +1,8 @@
 package com.jhe.question_bank.controller;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jhe.question_bank.common.constant.RequestPattern;
 import com.jhe.question_bank.common.dto.request.auth.SignInRequestDto;
+import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.AccessTokenRefreshResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.SignInResponseDto;
 import com.jhe.question_bank.common.validator.CsrfValidator;
@@ -34,23 +35,20 @@ public class AuthController {
     public ResponseEntity<? super SignInResponseDto> signIn(
         @RequestBody @Valid SignInRequestDto requestBody
     ) {
-        ResponseEntity<? super SignInResponseDto> response = authService.signIn(requestBody);
+        ResponseEntity<? super SignInResponseDto> authResponse = authService.signIn(requestBody);
 
-        boolean isSuccess = response.getStatusCode() == HttpStatus.OK;
+        boolean isSuccess = authResponse.getStatusCode() == HttpStatus.OK;
         if (!isSuccess) {
-            return response;
+            return authResponse;
         }
 
-        SignInResponseDto body = (SignInResponseDto) response.getBody();
-        if (body == null) return response;
+        SignInResponseDto body = (SignInResponseDto) authResponse.getBody();
+        if (body == null) return authResponse;
 
         String refreshCookie = authCookieProvider.refreshToken(body.getRefreshToken()).toString();
         String csrfCookie = authCookieProvider.csrfToken(body.getCsrfToken()).toString();
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.SET_COOKIE, refreshCookie)
-                .header(HttpHeaders.SET_COOKIE, csrfCookie)
-                .body(body);
+        return ResponseDto.successWithCookies(body, refreshCookie, csrfCookie);
     }
 
     @PostMapping("/refresh")
@@ -65,4 +63,21 @@ public class AuthController {
         return response;
     }
     
+    @PostMapping("/logout")
+    public ResponseEntity<ResponseDto> logout(
+        @AuthenticationPrincipal String userId 
+    ) {
+        ResponseEntity<ResponseDto> response = authService.logout(userId);
+                boolean isSuccess = response.getStatusCode() == HttpStatus.OK;
+
+        if (!isSuccess) {
+            return response;
+        }
+
+        String refreshCookie = authCookieProvider.deleteRefreshTokenCookie().toString();
+        String csrfCookie = authCookieProvider.deleteCsrfTokenCookie().toString();
+
+        ResponseDto body = response.getBody();
+        return ResponseDto.successWithCookies(body, refreshCookie, csrfCookie);
+    }
 }

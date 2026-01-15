@@ -8,6 +8,7 @@ public interface ResponseMessage {
     String AUTHENTICATION_FAIL = "Authentication failed.";
     String SIGN_IN_FAIL = "Sign in Fail.";
 
+    String SERVER_ERROR = "Server error.";
     String DATABASE_ERROR = "Database error.";
     String REFRESH_TOKEN_OPERATION_FAIL = "Refresh token operation failed.";
 }
