@@ -7,6 +7,7 @@ public interface ResponseMessage {
 
     String AUTHENTICATION_FAIL = "Authentication failed.";
     String SIGN_IN_FAIL = "Sign in Fail.";
+    String AUTHORIZATION_CODE_EXPIRED = "Authorization code has expired.";
 
     String SERVER_ERROR = "Server error.";
     String DATABASE_ERROR = "Database error.";

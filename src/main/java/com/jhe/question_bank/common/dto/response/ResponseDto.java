@@ -50,6 +50,11 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
+    public static ResponseEntity<ResponseDto> authorizationCodeExpired() {
+        ResponseDto body = new ResponseDto(ResponseCode.AUTHORIZATION_CODE_EXPIRED, ResponseMessage.AUTHORIZATION_CODE_EXPIRED);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
+
     public static ResponseEntity<ResponseDto> serverError() {
         ResponseDto body = new ResponseDto(ResponseCode.SERVER_ERROR, ResponseMessage.SERVER_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
