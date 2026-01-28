@@ -2,6 +2,8 @@ package com.jhe.question_bank.service.implement;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -14,11 +16,14 @@ import com.jhe.question_bank.common.dto.request.auth.IdCheckRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.SignInRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.AccessTokenRefreshResponseDto;
+import com.jhe.question_bank.common.dto.response.auth.GetUniversitiesResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.SignInResponseDto;
 import com.jhe.question_bank.common.entity.ApprovalCodeEntity;
+import com.jhe.question_bank.common.entity.UniversityEntity;
 import com.jhe.question_bank.common.entity.UserEntity;
 import com.jhe.question_bank.provider.JwtProvider;
 import com.jhe.question_bank.repository.ApprovalCodeRepository;
+import com.jhe.question_bank.repository.UniversityRepository;
 import com.jhe.question_bank.repository.UserRepository;
 import com.jhe.question_bank.service.AuthService;
 import com.jhe.question_bank.store.RefreshTokenStore;
@@ -31,6 +36,7 @@ public class AuthServiceImplement implements AuthService {
 
     private final UserRepository userRepository;
     private final ApprovalCodeRepository approvalCodeRepository;
+    private final UniversityRepository universityRepository;
     private final JwtProvider jwtProvider;
     private final RefreshTokenStore refreshTokenStore;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -98,6 +104,23 @@ public class AuthServiceImplement implements AuthService {
             return ResponseDto.serverError();
         }
         return AccessTokenRefreshResponseDto.success(accessToken);
+    }
+
+    @Override
+    public ResponseEntity<? super GetUniversitiesResponseDto> getUniversities() {
+
+        List<UniversityEntity> universityEntities = new ArrayList<>();
+
+        try {
+            
+            universityEntities = universityRepository.findAllByOrderByUniversityIdAsc();
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        
+        return GetUniversitiesResponseDto.success(universityEntities);
     }
 
     @Override

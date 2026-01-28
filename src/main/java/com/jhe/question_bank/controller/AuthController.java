@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import com.jhe.question_bank.common.dto.request.auth.IdCheckRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.SignInRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.AccessTokenRefreshResponseDto;
+import com.jhe.question_bank.common.dto.response.auth.GetUniversitiesResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.SignInResponseDto;
 import com.jhe.question_bank.common.validator.CsrfValidator;
 import com.jhe.question_bank.provider.AuthCookieProvider;
@@ -69,6 +71,12 @@ public class AuthController {
         @RequestBody @Valid IdCheckRequestDto requestBody
     ) {
         ResponseEntity<ResponseDto> response = authService.idCheck(requestBody);
+        return response;
+    }
+
+    @GetMapping("/universities")
+    public ResponseEntity<? super GetUniversitiesResponseDto> getUniversities() {
+        ResponseEntity<? super GetUniversitiesResponseDto> response = authService.getUniversities();
         return response;
     }
     
