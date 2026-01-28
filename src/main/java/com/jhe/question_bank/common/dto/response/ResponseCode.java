@@ -4,6 +4,7 @@ public interface ResponseCode {
     String SUCCESS = "SU";
 
     String VALIDATION_FAIL = "VF";
+    String DUPLICATED_USER_ID = "DI";
 
     String AUTHENTICATION_FAIL = "AF";
     String SIGN_IN_FAIL = "SF";

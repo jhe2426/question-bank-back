@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.jhe.question_bank.common.dto.request.auth.IdCheckRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.SignInRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.AccessTokenRefreshResponseDto;
@@ -97,6 +98,20 @@ public class AuthServiceImplement implements AuthService {
             return ResponseDto.serverError();
         }
         return AccessTokenRefreshResponseDto.success(accessToken);
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> idCheck(IdCheckRequestDto dto) {
+        try {    
+            String userId = dto.getUserId();
+            boolean isExistUserId = userRepository.existsByUserId(userId);
+            if (isExistUserId) return ResponseDto.duplicatedUserId();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return ResponseDto.success(HttpStatus.OK);
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jhe.question_bank.common.constant.RequestPattern;
+import com.jhe.question_bank.common.dto.request.auth.IdCheckRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.SignInRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.AccessTokenRefreshResponseDto;
@@ -60,6 +61,14 @@ public class AuthController {
 
         ResponseEntity<? super AccessTokenRefreshResponseDto> response = authService.refreshAccessToken(refreshToken);
 
+        return response;
+    }
+
+    @PostMapping("/id-check")
+    public ResponseEntity<ResponseDto> idCheck(
+        @RequestBody @Valid IdCheckRequestDto requestBody
+    ) {
+        ResponseEntity<ResponseDto> response = authService.idCheck(requestBody);
         return response;
     }
     
