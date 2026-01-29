@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jhe.question_bank.common.constant.RequestPattern;
 import com.jhe.question_bank.common.dto.request.auth.IdCheckRequestDto;
+import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCheckRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.SignInRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
@@ -86,6 +87,14 @@ public class AuthController {
         @RequestBody @Valid PhoneNumberAuthRequestDto requestBody
     ) {
         ResponseEntity<ResponseDto> response = authService.phoneNumberAuth(requestBody);
+        return response;
+    }
+
+    @PostMapping("/phone-number-auth-check")
+    public ResponseEntity<ResponseDto> phoneNumberAuthCheck(
+        @RequestBody @Valid PhoneNumberAuthCheckRequestDto requestBody
+    ) {
+        ResponseEntity<ResponseDto> response = authService.phoneNumberAuthCheck(requestBody);
         return response;
     }
     

@@ -6,6 +6,7 @@ public interface ResponseMessage {
     String VALIDATION_FAIL = "Validation failed.";
     String EXISTS_USER_ID = "User id already exists.";
     String EXISTS_USER_PHONE_NUMBER = "User phone number already exists.";
+    String PHONE_NUMBER_AUTH_FAIL = "Phone number authentication failed.";
 
     String AUTHENTICATION_FAIL = "Authentication failed.";
     String SIGN_IN_FAIL = "Sign in Fail.";

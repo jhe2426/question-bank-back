@@ -6,6 +6,7 @@ public interface ResponseCode {
     String VALIDATION_FAIL = "VF";
     String EXISTS_USER_ID = "EUI";
     String EXISTS_USER_PHONE_NUMBER = "EUP";
+    String PHONE_NUMBER_AUTH_FAIL = "PAF";
 
     String AUTHENTICATION_FAIL = "AF";
     String SIGN_IN_FAIL = "SF";

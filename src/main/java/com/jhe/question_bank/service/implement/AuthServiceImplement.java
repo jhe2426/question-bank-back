@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.jhe.question_bank.common.dto.request.auth.IdCheckRequestDto;
+import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCheckRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.SignInRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
@@ -202,6 +203,25 @@ public class AuthServiceImplement implements AuthService {
         }
         
         return ResponseDto.success(HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> phoneNumberAuthCheck(PhoneNumberAuthCheckRequestDto dto) {
+
+        String phoneNumber = dto.getPhoneNumber();
+        String authCode = dto.getAuthCode();
+        
+        try {
+            boolean isAuthCodeValid = phoneNumberAuthStore.isAuthCodeValid(phoneNumber, authCode);
+            if (!isAuthCodeValid) return ResponseDto.phoneNumberAuthFail();
+
+            phoneNumberAuthStore.verifySave(phoneNumber);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.redisServerError();
+        }
+
+        return ResponseDto.success(HttpStatus.OK);
     }
 
     @Override

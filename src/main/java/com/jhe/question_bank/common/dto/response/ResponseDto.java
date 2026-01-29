@@ -50,6 +50,11 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    public static ResponseEntity<ResponseDto> phoneNumberAuthFail() {
+        ResponseDto body = new ResponseDto(ResponseCode.PHONE_NUMBER_AUTH_FAIL, ResponseMessage.PHONE_NUMBER_AUTH_FAIL);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
     public static ResponseEntity<ResponseDto> authenticationFail() {
         ResponseDto body = new ResponseDto(ResponseCode.AUTHENTICATION_FAIL, ResponseMessage.AUTHENTICATION_FAIL);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
