@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.jhe.question_bank.common.dto.request.auth.ApprovalCodeRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.IdCheckRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCodeRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCodeVerifyRequestDto;
@@ -188,9 +189,9 @@ public class AuthServiceImplement implements AuthService {
             return ResponseDto.redisServerError();
         }
 
-        String authCode = AuthCodeCreator.generateNumber();
+        String authCode = AuthCodeCreator.generatePhoneNumberAuthCode();
 
-        boolean isSendSuccessful = smsProvider.sendMessage(phoneNumber, authCode);
+        boolean isSendSuccessful = smsProvider.sendPhoneNumberAuthCodeMessage(phoneNumber, authCode);
         if (!isSendSuccessful) return ResponseDto.smsSendFail();
 
         try {
@@ -222,6 +223,28 @@ public class AuthServiceImplement implements AuthService {
         }
 
         return ResponseDto.success(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> approvalCode(ApprovalCodeRequestDto dto) {
+        String phoneNumber = dto.getPhoneNumber();
+
+        String approvalCode = AuthCodeCreator.generateApprovalCode();
+
+        boolean isSendSuccessful = smsProvider.sendApprovalCodeMessage(phoneNumber, approvalCode);
+        if (!isSendSuccessful) return ResponseDto.smsSendFail();
+
+        try {
+            
+            ApprovalCodeEntity approvalCodeEntity = new ApprovalCodeEntity(approvalCode);
+            approvalCodeRepository.save(approvalCodeEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return ResponseDto.success(HttpStatus.CREATED);
     }
 
     @Override

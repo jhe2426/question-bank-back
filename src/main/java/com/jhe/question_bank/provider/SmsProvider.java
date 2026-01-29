@@ -22,12 +22,28 @@ public class SmsProvider {
         this.from = from;
     }
 
-    public boolean sendMessage(String to, String authCode) {
+    public boolean sendPhoneNumberAuthCodeMessage(String to, String authCode) {
 
         Message message = new Message();
         message.setFrom(from);
         message.setTo(to);
         message.setText("Adsp 문제은행 인증번호은 [" + authCode + "]입니다. \n5분 이내에 입력해주세요");
+
+        try {
+            messageService.send(message);
+            return true;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean sendApprovalCodeMessage(String to, String approvalCode) {
+
+        Message message = new Message();
+        message.setFrom(from);
+        message.setTo(to);
+        message.setText("Adsp 문제은행의 승인번호는 [" + approvalCode + "]입니다.");
 
         try {
             messageService.send(message);

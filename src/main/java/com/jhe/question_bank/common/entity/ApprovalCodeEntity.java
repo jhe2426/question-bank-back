@@ -17,4 +17,8 @@ public class ApprovalCodeEntity {
     private String approvalCode;
     private String userId;
     private String expireDate;
+
+    public ApprovalCodeEntity(String approvalCode) {
+        this.approvalCode = approvalCode;
+    }
 }
