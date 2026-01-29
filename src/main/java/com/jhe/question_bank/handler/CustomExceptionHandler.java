@@ -38,6 +38,6 @@ public class CustomExceptionHandler {
     @ExceptionHandler(RedisStorageException.class)
     public ResponseEntity<ResponseDto> redisStorageExceptionHandler(RedisStorageException exception) {
         exception.printStackTrace();
-        return ResponseDto.refreshTokenFail();
+        return ResponseDto.redisServerError();
     }
 }

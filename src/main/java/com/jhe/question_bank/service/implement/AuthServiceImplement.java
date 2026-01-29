@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.jhe.question_bank.common.dto.request.auth.IdCheckRequestDto;
+import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.SignInRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.AccessTokenRefreshResponseDto;
@@ -21,11 +22,14 @@ import com.jhe.question_bank.common.dto.response.auth.SignInResponseDto;
 import com.jhe.question_bank.common.entity.ApprovalCodeEntity;
 import com.jhe.question_bank.common.entity.UniversityEntity;
 import com.jhe.question_bank.common.entity.UserEntity;
+import com.jhe.question_bank.common.util.AuthCodeCreator;
 import com.jhe.question_bank.provider.JwtProvider;
+import com.jhe.question_bank.provider.SmsProvider;
 import com.jhe.question_bank.repository.ApprovalCodeRepository;
 import com.jhe.question_bank.repository.UniversityRepository;
 import com.jhe.question_bank.repository.UserRepository;
 import com.jhe.question_bank.service.AuthService;
+import com.jhe.question_bank.store.PhoneNumberAuthStore;
 import com.jhe.question_bank.store.RefreshTokenStore;
 
 import lombok.RequiredArgsConstructor;
@@ -37,8 +41,13 @@ public class AuthServiceImplement implements AuthService {
     private final UserRepository userRepository;
     private final ApprovalCodeRepository approvalCodeRepository;
     private final UniversityRepository universityRepository;
+
     private final JwtProvider jwtProvider;
+    private final SmsProvider smsProvider;
+
     private final RefreshTokenStore refreshTokenStore;
+    private final PhoneNumberAuthStore phoneNumberAuthStore;
+
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
@@ -48,9 +57,10 @@ public class AuthServiceImplement implements AuthService {
         String refreshToken = null;
         String csrfToken = null;
 
+        String userId = dto.getUserId();
+
         try {
 
-            String userId = dto.getUserId();
             UserEntity userEntity = userRepository.findByUserId(userId);
             if (userEntity == null) return ResponseDto.signInFail();
 
@@ -67,42 +77,56 @@ public class AuthServiceImplement implements AuthService {
             LocalDate now = LocalDate.now();
             boolean isNotExpired = now.isBefore(expiresAt) || now.isEqual(expiresAt);
             if(!isNotExpired) return ResponseDto.authorizationCodeExpired();
-
-            accessToken = jwtProvider.createAccessToken(userId);
-            refreshToken = jwtProvider.createRefreshToken(userId);
-            csrfToken = UUID.randomUUID().toString();
-
-            refreshTokenStore.save(userId, refreshToken);
             
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
         }
+
+        accessToken = jwtProvider.createAccessToken(userId);
+        refreshToken = jwtProvider.createRefreshToken(userId);
+        csrfToken = UUID.randomUUID().toString();
+
+        try {
+
+            refreshTokenStore.save(userId, refreshToken);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.redisServerError();
+        }
+
         return SignInResponseDto.success(accessToken, refreshToken, csrfToken);
     }
 
     @Override
     public ResponseEntity<? super AccessTokenRefreshResponseDto> refreshAccessToken(String refreshToken) {
         
-        String accessToken = null;
+        String userId = jwtProvider.validateRefreshToken(refreshToken);
+        if (userId == null) return ResponseDto.authenticationFail();
 
         try {
 
-            String userId = jwtProvider.validateRefreshToken(refreshToken);
-            if (userId == null) return ResponseDto.authenticationFail();
-
             boolean isMatched = refreshTokenStore.matches(userId, refreshToken);
             if (!isMatched) return ResponseDto.authenticationFail();
+            
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.redisServerError();
+        }
+
+        try {
 
             boolean existUser = userRepository.existsById(userId);
             if (!existUser) return ResponseDto.authenticationFail();
 
-            accessToken = jwtProvider.createAccessToken(userId);
-            
         } catch (Exception exception) {
             exception.printStackTrace();
-            return ResponseDto.serverError();
+            return ResponseDto.databaseError();
         }
+
+        String accessToken = jwtProvider.createAccessToken(userId);
+
         return AccessTokenRefreshResponseDto.success(accessToken);
     }
 
@@ -128,13 +152,56 @@ public class AuthServiceImplement implements AuthService {
         try {    
             String userId = dto.getUserId();
             boolean isExistUserId = userRepository.existsByUserId(userId);
-            if (isExistUserId) return ResponseDto.duplicatedUserId();
+            if (isExistUserId) return ResponseDto.existsUserId();
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
         }
 
         return ResponseDto.success(HttpStatus.OK);
+    }
+
+
+    @Override
+    public ResponseEntity<ResponseDto> phoneNumberAuth(PhoneNumberAuthRequestDto dto) {
+        
+        String phoneNumber = dto.getPhoneNumber();
+
+        try {
+            
+            boolean isExistedPhoneNumber = userRepository.existsByPhoneNumber(phoneNumber);
+            if (isExistedPhoneNumber) return ResponseDto.existsUserPhoneNumber();
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        try {
+
+            boolean isAuthCodeIssued = phoneNumberAuthStore.authCodeExists(phoneNumber);
+            if (isAuthCodeIssued) return ResponseDto.authCodeAlreadySent();
+            
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.redisServerError();
+        }
+
+        String authCode = AuthCodeCreator.generateNumber();
+
+        boolean isSendSuccessful = smsProvider.sendMessage(phoneNumber, authCode);
+        if (!isSendSuccessful) return ResponseDto.smsSendFail();
+
+        try {
+
+            phoneNumberAuthStore.saveAuthCode(phoneNumber, authCode);
+            
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.redisServerError();
+        }
+        
+        return ResponseDto.success(HttpStatus.CREATED);
     }
 
     @Override
@@ -145,7 +212,7 @@ public class AuthServiceImplement implements AuthService {
             
         } catch (Exception exception) {
             exception.printStackTrace();
-            return ResponseDto.serverError();
+            return ResponseDto.redisServerError();
         }
         
         return ResponseDto.success(HttpStatus.OK);

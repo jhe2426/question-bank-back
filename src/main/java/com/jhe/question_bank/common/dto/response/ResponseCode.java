@@ -4,13 +4,16 @@ public interface ResponseCode {
     String SUCCESS = "SU";
 
     String VALIDATION_FAIL = "VF";
-    String DUPLICATED_USER_ID = "DI";
+    String EXISTS_USER_ID = "EUI";
+    String EXISTS_USER_PHONE_NUMBER = "EUP";
 
     String AUTHENTICATION_FAIL = "AF";
     String SIGN_IN_FAIL = "SF";
     String AUTHORIZATION_CODE_EXPIRED = "AE";
 
-    String SERVER_ERROR = "SE";
+    String AUTH_CODE_ALREADY_SENT = "AR";
+
+    String SMS_SEND_FAILED = "SSF";
+    String REDIS_SERVER_ERROR = "RE";
     String DATABASE_ERROR = "DBE";
-    String REFRESH_TOKEN_OPERATION_FAIL = "ROF";
 }

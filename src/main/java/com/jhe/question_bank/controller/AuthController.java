@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jhe.question_bank.common.constant.RequestPattern;
 import com.jhe.question_bank.common.dto.request.auth.IdCheckRequestDto;
+import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.SignInRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.AccessTokenRefreshResponseDto;
@@ -79,13 +80,21 @@ public class AuthController {
         ResponseEntity<? super GetUniversitiesResponseDto> response = authService.getUniversities();
         return response;
     }
+
+    @PostMapping("/phone-number-auth")
+    public ResponseEntity<ResponseDto> phoneNumberAuth(
+        @RequestBody @Valid PhoneNumberAuthRequestDto requestBody
+    ) {
+        ResponseEntity<ResponseDto> response = authService.phoneNumberAuth(requestBody);
+        return response;
+    }
     
     @PostMapping("/logout")
     public ResponseEntity<ResponseDto> logout(
         @AuthenticationPrincipal String userId 
     ) {
         ResponseEntity<ResponseDto> response = authService.logout(userId);
-                boolean isSuccess = response.getStatusCode() == HttpStatus.OK;
+        boolean isSuccess = response.getStatusCode() == HttpStatus.OK;
 
         if (!isSuccess) {
             return response;

@@ -37,8 +37,10 @@ public class RefreshTokenStore {
     public boolean matches(String userId, String refreshToken) {
         try {
             String key = getKey(userId);
-            String stored = redisTemplate.opsForValue().get(key);
-            boolean isRefreshTokenMatched = refreshToken.equals(stored);
+            String storedRefreshToken = redisTemplate.opsForValue().get(key);
+            if(storedRefreshToken == null) return false;
+
+            boolean isRefreshTokenMatched = refreshToken.equals(storedRefreshToken);
             return isRefreshTokenMatched;
             
         } catch (Exception exception) {

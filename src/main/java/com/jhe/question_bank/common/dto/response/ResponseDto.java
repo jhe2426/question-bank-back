@@ -39,9 +39,14 @@ public class ResponseDto {
         ResponseDto body = new ResponseDto(ResponseCode.VALIDATION_FAIL, ResponseMessage.VALIDATION_FAIL);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
+  
+    public static ResponseEntity<ResponseDto> existsUserId() {
+        ResponseDto body = new ResponseDto(ResponseCode.EXISTS_USER_ID, ResponseMessage.EXISTS_USER_ID);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
 
-    public static ResponseEntity<ResponseDto> duplicatedUserId() {
-        ResponseDto body = new ResponseDto(ResponseCode.DUPLICATED_USER_ID, ResponseMessage.DUPLICATED_USER_ID);
+    public static ResponseEntity<ResponseDto> existsUserPhoneNumber() {
+        ResponseDto body = new ResponseDto(ResponseCode.EXISTS_USER_PHONE_NUMBER, ResponseMessage.EXISTS_USER_PHONE_NUMBER);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
@@ -60,18 +65,23 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
-    public static ResponseEntity<ResponseDto> serverError() {
-        ResponseDto body = new ResponseDto(ResponseCode.SERVER_ERROR, ResponseMessage.SERVER_ERROR);
+    public static ResponseEntity<ResponseDto> authCodeAlreadySent() {
+        ResponseDto body = new ResponseDto(ResponseCode.AUTH_CODE_ALREADY_SENT, ResponseMessage.AUTH_CODE_ALREADY_SENT);
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(body);
+    }
+
+    public static ResponseEntity<ResponseDto> smsSendFail() {
+        ResponseDto body = new ResponseDto(ResponseCode.SMS_SEND_FAILED, ResponseMessage.SMS_SEND_FAILED);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+    }
+
+    public static ResponseEntity<ResponseDto> redisServerError() {
+        ResponseDto body = new ResponseDto(ResponseCode.REDIS_SERVER_ERROR, ResponseMessage.REDIS_SERVER_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
     public static ResponseEntity<ResponseDto> databaseError() {
         ResponseDto body = new ResponseDto(ResponseCode.DATABASE_ERROR, ResponseMessage.DATABASE_ERROR);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
-    }
-
-    public static ResponseEntity<ResponseDto> refreshTokenFail() {
-        ResponseDto body = new ResponseDto(ResponseCode.REFRESH_TOKEN_OPERATION_FAIL, ResponseMessage.REFRESH_TOKEN_OPERATION_FAIL);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 }

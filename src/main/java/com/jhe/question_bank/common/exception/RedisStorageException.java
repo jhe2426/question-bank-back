@@ -4,6 +4,6 @@ import com.jhe.question_bank.common.dto.response.ResponseMessage;
 
 public class RedisStorageException extends RuntimeException {
     public RedisStorageException() {
-        super(ResponseMessage.REFRESH_TOKEN_OPERATION_FAIL);
+        super(ResponseMessage.REDIS_SERVER_ERROR);
     }
 }

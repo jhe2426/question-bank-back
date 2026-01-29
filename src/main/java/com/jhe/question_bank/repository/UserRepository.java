@@ -9,6 +9,7 @@ import com.jhe.question_bank.common.entity.UserEntity;
 public interface UserRepository extends JpaRepository<UserEntity, String> {
     
     boolean existsByUserId(String userId);
+    boolean existsByPhoneNumber(String phoneNumber);
 
     UserEntity findByUserId(String userId);
 }
