@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jhe.question_bank.common.constant.RequestPattern;
 import com.jhe.question_bank.common.dto.request.auth.IdCheckRequestDto;
-import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCheckRequestDto;
-import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthRequestDto;
+import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCodeRequestDto;
+import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCodeVerifyRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.SignInRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.AccessTokenRefreshResponseDto;
@@ -82,19 +82,19 @@ public class AuthController {
         return response;
     }
 
-    @PostMapping("/phone-number-auth")
-    public ResponseEntity<ResponseDto> phoneNumberAuth(
-        @RequestBody @Valid PhoneNumberAuthRequestDto requestBody
+    @PostMapping("/phone-number/auth-code")
+    public ResponseEntity<ResponseDto> phoneNumberAuthCode(
+        @RequestBody @Valid PhoneNumberAuthCodeRequestDto requestBody
     ) {
-        ResponseEntity<ResponseDto> response = authService.phoneNumberAuth(requestBody);
+        ResponseEntity<ResponseDto> response = authService.phoneNumberAuthCode(requestBody);
         return response;
     }
 
-    @PostMapping("/phone-number-auth-check")
-    public ResponseEntity<ResponseDto> phoneNumberAuthCheck(
-        @RequestBody @Valid PhoneNumberAuthCheckRequestDto requestBody
+    @PostMapping("/phone-number/auth-code/verify")
+    public ResponseEntity<ResponseDto> phoneNumberAuthCodeVerify(
+        @RequestBody @Valid PhoneNumberAuthCodeVerifyRequestDto requestBody
     ) {
-        ResponseEntity<ResponseDto> response = authService.phoneNumberAuthCheck(requestBody);
+        ResponseEntity<ResponseDto> response = authService.phoneNumberAuthCodeVerify(requestBody);
         return response;
     }
     
