@@ -21,4 +21,8 @@ public class ApprovalCodeEntity {
     public ApprovalCodeEntity(String approvalCode) {
         this.approvalCode = approvalCode;
     }
+
+    public void updateUserId(String userId) {
+        this.userId = userId;
+    }
 }

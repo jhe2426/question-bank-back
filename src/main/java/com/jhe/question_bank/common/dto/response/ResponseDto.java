@@ -36,7 +36,7 @@ public class ResponseDto {
     }
 
     public static ResponseEntity<ResponseDto> validationFail() {
-        ResponseDto body = new ResponseDto(ResponseCode.VALIDATION_FAIL, ResponseMessage.VALIDATION_FAIL);
+        ResponseDto body = new ResponseDto(ResponseCode.VALIDATION_FAIL, ResponseMessage.VALIDATION_FAILED);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
   
@@ -50,8 +50,18 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    public static ResponseEntity<ResponseDto> usedApprovalCode() {
+        ResponseDto body = new ResponseDto(ResponseCode.USED_APPROVAL_CODE, ResponseMessage.USED_APPROVAL_CODE);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
     public static ResponseEntity<ResponseDto> phoneNumberAuthFail() {
-        ResponseDto body = new ResponseDto(ResponseCode.PHONE_NUMBER_AUTH_FAIL, ResponseMessage.PHONE_NUMBER_AUTH_FAIL);
+        ResponseDto body = new ResponseDto(ResponseCode.PHONE_NUMBER_AUTH_FAILED, ResponseMessage.PHONE_NUMBER_AUTH_FAILED);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    public static ResponseEntity<ResponseDto> approvalCodeAuthFail() {
+        ResponseDto body = new ResponseDto(ResponseCode.APPROVAL_CODE_AUTH_FAILED, ResponseMessage.APPROVAL_CODE_AUTH_FAILED);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 

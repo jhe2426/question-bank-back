@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jhe.question_bank.common.constant.RequestPattern;
 import com.jhe.question_bank.common.dto.request.auth.ApprovalCodeRequestDto;
+import com.jhe.question_bank.common.dto.request.auth.ApprovalCodeVerifyRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.IdCheckRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCodeRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCodeVerifyRequestDto;
@@ -104,6 +105,14 @@ public class AuthController {
         @RequestBody @Valid ApprovalCodeRequestDto requestBody
     ) {
         ResponseEntity<ResponseDto> response = authService.approvalCode(requestBody);
+        return response;
+    }
+    
+    @PostMapping("/approval-code/verify")
+    public ResponseEntity<ResponseDto> approvalCodeVerify(
+        @RequestBody @Valid ApprovalCodeVerifyRequestDto requestBody
+    ) {
+        ResponseEntity<ResponseDto> response = authService.approvalCodeVerify(requestBody);
         return response;
     }
     

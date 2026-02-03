@@ -8,8 +8,7 @@ import com.jhe.question_bank.common.entity.ApprovalCodeEntity;
 @Repository
 public interface ApprovalCodeRepository extends JpaRepository<ApprovalCodeEntity, String>{
 
-    boolean existsByApprovalCode(String approvalCode);
-
+    ApprovalCodeEntity findByApprovalCode(String approvalCode);
     ApprovalCodeEntity findByUserId(String userId);
     
 }

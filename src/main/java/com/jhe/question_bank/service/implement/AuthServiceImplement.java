@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.jhe.question_bank.common.dto.request.auth.ApprovalCodeRequestDto;
+import com.jhe.question_bank.common.dto.request.auth.ApprovalCodeVerifyRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.IdCheckRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCodeRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCodeVerifyRequestDto;
@@ -34,6 +35,7 @@ import com.jhe.question_bank.service.AuthService;
 import com.jhe.question_bank.store.PhoneNumberAuthStore;
 import com.jhe.question_bank.store.RefreshTokenStore;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -52,6 +54,7 @@ public class AuthServiceImplement implements AuthService {
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    @Transactional
     @Override
     public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
 
@@ -245,6 +248,46 @@ public class AuthServiceImplement implements AuthService {
         }
 
         return ResponseDto.success(HttpStatus.CREATED);
+    }
+
+    
+
+    @Override
+    public ResponseEntity<ResponseDto> approvalCodeVerify(ApprovalCodeVerifyRequestDto dto) {
+        
+        String userId = dto.getUserId();
+        String approvalCode = dto.getApprovalCode();
+
+        try {
+            
+            boolean isExistedUserId = userRepository.existsByUserId(userId);
+            if (isExistedUserId) return ResponseDto.existsUserId();
+
+            ApprovalCodeEntity approvalCodeEntity = approvalCodeRepository.findByApprovalCode(approvalCode);
+            if (approvalCodeEntity == null) return ResponseDto.approvalCodeAuthFail();
+            
+            String approvalCodeExpireDate = approvalCodeEntity.getExpireDate();
+            boolean isExistedApprovalCodeExpireDate = approvalCodeExpireDate != null;
+            if (isExistedApprovalCodeExpireDate) return ResponseDto.usedApprovalCode();
+
+            ApprovalCodeEntity occupyingUserIdApprovalCodeEntity = approvalCodeRepository.findByUserId(userId);
+            if (occupyingUserIdApprovalCodeEntity != null) {
+                String occupyingApprovalCode = occupyingUserIdApprovalCodeEntity.getApprovalCode();
+                if (!occupyingApprovalCode.equals(approvalCode)) {
+                    occupyingUserIdApprovalCodeEntity.updateUserId(null);
+                    approvalCodeRepository.saveAndFlush(occupyingUserIdApprovalCodeEntity);
+                }
+            }
+
+            approvalCodeEntity.updateUserId(userId);
+            approvalCodeRepository.save(approvalCodeEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return ResponseDto.success(HttpStatus.OK);
     }
 
     @Override
