@@ -18,6 +18,7 @@ import com.jhe.question_bank.common.dto.request.auth.IdCheckRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCodeRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCodeVerifyRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.SignInRequestDto;
+import com.jhe.question_bank.common.dto.request.auth.SignUpRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.AccessTokenRefreshResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.GetUniversitiesResponseDto;
@@ -154,8 +155,10 @@ public class AuthServiceImplement implements AuthService {
 
     @Override
     public ResponseEntity<ResponseDto> idCheck(IdCheckRequestDto dto) {
+
+        String userId = dto.getUserId();
+
         try {    
-            String userId = dto.getUserId();
             boolean isExistUserId = userRepository.existsByUserId(userId);
             if (isExistUserId) return ResponseDto.existsUserId();
         } catch (Exception exception) {
@@ -281,6 +284,58 @@ public class AuthServiceImplement implements AuthService {
 
             approvalCodeEntity.updateUserId(userId);
             approvalCodeRepository.save(approvalCodeEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return ResponseDto.success(HttpStatus.OK);
+    }
+
+    
+
+    @Override
+    public ResponseEntity<ResponseDto> signUp(SignUpRequestDto dto) {
+
+        String userId = dto.getUserId();
+        String phoneNumber = dto.getPhoneNumber();
+        String approvalCode = dto.getApprovalCode();
+        String password = dto.getPassword();
+
+        try {
+
+            boolean isExistUserId = userRepository.existsByUserId(userId);
+            if (isExistUserId) return ResponseDto.existsUserId();
+
+            boolean isExistedPhoneNumber = userRepository.existsByPhoneNumber(phoneNumber);
+            if (isExistedPhoneNumber) return ResponseDto.existsUserPhoneNumber();
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        try {
+            
+            boolean isPhoneAuthVerified = phoneNumberAuthStore.isVerified(phoneNumber);
+            if (!isPhoneAuthVerified) return ResponseDto.phoneNumberAuthFail();
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.redisServerError();
+        }
+
+        try {
+            
+            boolean isApprovalCodeVerified = approvalCodeRepository.existsByApprovalCodeAndUserId(approvalCode, userId);
+            if (!isApprovalCodeVerified) return ResponseDto.approvalCodeAuthFail();
+
+            String encodedPassword = passwordEncoder.encode(password);
+            dto.setPassword(encodedPassword);
+
+            UserEntity userEntity = new UserEntity(dto);
+            userRepository.save(userEntity);
 
         } catch (Exception exception) {
             exception.printStackTrace();

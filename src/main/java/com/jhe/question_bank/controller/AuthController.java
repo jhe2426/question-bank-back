@@ -17,6 +17,7 @@ import com.jhe.question_bank.common.dto.request.auth.IdCheckRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCodeRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCodeVerifyRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.SignInRequestDto;
+import com.jhe.question_bank.common.dto.request.auth.SignUpRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.AccessTokenRefreshResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.GetUniversitiesResponseDto;
@@ -115,6 +116,14 @@ public class AuthController {
         ResponseEntity<ResponseDto> response = authService.approvalCodeVerify(requestBody);
         return response;
     }
+
+    @PostMapping("/sign-up")
+    public ResponseEntity<ResponseDto> signUp(
+        @RequestBody @Valid SignUpRequestDto requestBody
+    ) {
+        ResponseEntity<ResponseDto> response = authService.signUp(requestBody);
+        return response;
+    }
     
     @PostMapping("/logout")
     public ResponseEntity<ResponseDto> logout(
@@ -133,4 +142,5 @@ public class AuthController {
         ResponseDto body = response.getBody();
         return ResponseDto.successWithCookies(body, refreshCookie, csrfCookie);
     }
+
 }

@@ -10,5 +10,6 @@ public interface ApprovalCodeRepository extends JpaRepository<ApprovalCodeEntity
 
     ApprovalCodeEntity findByApprovalCode(String approvalCode);
     ApprovalCodeEntity findByUserId(String userId);
-    
+
+    boolean existsByApprovalCodeAndUserId(String approvalCode, String userId);
 }

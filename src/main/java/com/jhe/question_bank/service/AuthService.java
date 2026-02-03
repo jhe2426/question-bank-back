@@ -8,6 +8,7 @@ import com.jhe.question_bank.common.dto.request.auth.IdCheckRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCodeRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.PhoneNumberAuthCodeVerifyRequestDto;
 import com.jhe.question_bank.common.dto.request.auth.SignInRequestDto;
+import com.jhe.question_bank.common.dto.request.auth.SignUpRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.AccessTokenRefreshResponseDto;
 import com.jhe.question_bank.common.dto.response.auth.GetUniversitiesResponseDto;
@@ -22,5 +23,6 @@ public interface AuthService {
     public ResponseEntity<ResponseDto> phoneNumberAuthCodeVerify(PhoneNumberAuthCodeVerifyRequestDto dto);
     public ResponseEntity<ResponseDto> approvalCode(ApprovalCodeRequestDto dto);
     public ResponseEntity<ResponseDto> approvalCodeVerify(ApprovalCodeVerifyRequestDto dto);
+    public ResponseEntity<ResponseDto> signUp(SignUpRequestDto dto);
     public ResponseEntity<ResponseDto> logout(String userId);
 }
