@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SignUpRequestDto {
     @NotBlank
-    @Pattern(regexp="^[a-z0-9]{3,15}$")
+    @Pattern(regexp="^(?=.*[a-z])(?=.*[0-9])[a-z0-9]{3,15}$")
     private String userId;
 
     @NotBlank
