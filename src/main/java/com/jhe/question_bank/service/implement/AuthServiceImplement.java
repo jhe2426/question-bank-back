@@ -295,6 +295,7 @@ public class AuthServiceImplement implements AuthService {
 
     
 
+    @Transactional
     @Override
     public ResponseEntity<ResponseDto> signUp(SignUpRequestDto dto) {
 
@@ -328,8 +329,11 @@ public class AuthServiceImplement implements AuthService {
 
         try {
             
-            boolean isApprovalCodeVerified = approvalCodeRepository.existsByApprovalCodeAndUserId(approvalCode, userId);
-            if (!isApprovalCodeVerified) return ResponseDto.approvalCodeAuthFail();
+            ApprovalCodeEntity approvalCodeEntity = approvalCodeRepository.findByApprovalCodeAndUserId(approvalCode, userId);
+            if (approvalCodeEntity == null) return ResponseDto.approvalCodeAuthFail();
+
+            approvalCodeEntity.updateExpireDate();
+            approvalCodeRepository.save(approvalCodeEntity);
 
             String encodedPassword = passwordEncoder.encode(password);
             dto.setPassword(encodedPassword);

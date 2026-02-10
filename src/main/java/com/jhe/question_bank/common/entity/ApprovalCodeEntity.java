@@ -1,5 +1,7 @@
 package com.jhe.question_bank.common.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -24,5 +26,10 @@ public class ApprovalCodeEntity {
 
     public void updateUserId(String userId) {
         this.userId = userId;
+    }
+
+    public void updateExpireDate() {
+        LocalDate nextYear = LocalDate.now().plusYears(1);
+        this.expireDate = nextYear.toString();
     }
 }
