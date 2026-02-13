@@ -34,7 +34,7 @@ public class MockExamServiceImplement implements MockExamService {
             
             unitEntities = unitRepository.findAllByOrderByUnitIdAsc();
 
-            List<ChapterEntity> chapterEntities = chapterRepository.findAllByOrderByUnitIdAscChapterIdAsc();
+            List<ChapterEntity> chapterEntities = chapterRepository.findAllByOrderByUnitIdAscChapterNumberAsc();
             for (ChapterEntity chapterEntity: chapterEntities) {
                 chpaterMap.computeIfAbsent(chapterEntity.getUnitId(), k -> new ArrayList<>())
                     .add(chapterEntity);

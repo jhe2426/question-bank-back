@@ -31,32 +31,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         
-        try {
-
-            String token = getToken(request);
-            if (token == null) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            String userId = jwtProvider.validateAccessToken(token);
-            if (userId == null) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            boolean existUser = userRepository.existsByUserId(userId);
-            if (!existUser) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            setContext(userId, request);
-            
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        String token = getToken(request);
+        if (token == null) {
+            filterChain.doFilter(request, response);
+            return;
         }
-        
+
+        String userId = jwtProvider.validateAccessToken(token);
+        if (userId == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        boolean existUser = userRepository.existsByUserId(userId);
+        if (!existUser) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        setContext(userId, request);
         filterChain.doFilter(request, response);
 
     }

@@ -6,9 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.jhe.question_bank.common.entity.ChapterEntity;
-import com.jhe.question_bank.common.entity.pk.ChapterPk;
 
 @Repository
-public interface ChapterRepository extends JpaRepository<ChapterEntity, ChapterPk>{
-    List<ChapterEntity> findAllByOrderByUnitIdAscChapterIdAsc();
+public interface ChapterRepository extends JpaRepository<ChapterEntity, Integer>{
+    List<ChapterEntity> findAllByOrderByUnitIdAscChapterNumberAsc();
 }

@@ -9,14 +9,16 @@ import lombok.Getter;
 
 @Getter
 public class ChapterVO {
-    private Integer unitId;
     private Integer chapterId;
+    private Integer unitId;
+    private Integer chapterNumber;
     private String chapterName;
 
 
     private ChapterVO(ChapterEntity chapterEntity) {
-        this.unitId = chapterEntity.getUnitId();
         this.chapterId = chapterEntity.getChapterId();
+        this.unitId = chapterEntity.getUnitId();
+        this.chapterNumber = chapterEntity.getChapterNumber();
         this.chapterName = chapterEntity.getChapterName();
     }
 
