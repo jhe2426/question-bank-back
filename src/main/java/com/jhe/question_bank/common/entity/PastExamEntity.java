@@ -4,21 +4,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table; 
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity(name="pastExamQuestions")
-@Table(name="past_exam_questions")
+@Entity(name="pastExams")
+@Table(name="past_exams")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PastExamQuestionEntity {
+public class PastExamEntity {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Integer pastExamQuestionId;
-    private Integer questionId;
     private Integer pastExamId;
-    private Integer questionOrder;
+    private Integer pastExamRound;
 }

@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.past.exam.GetPastExamRoundsResponseDto;
-import com.jhe.question_bank.common.entity.PastExamQuestionEntity;
-import com.jhe.question_bank.repository.PastExamQuestionRepository;
+import com.jhe.question_bank.common.entity.PastExamEntity;
+import com.jhe.question_bank.repository.PastExamRepository;
 import com.jhe.question_bank.service.PastExamService;
 
 import lombok.RequiredArgsConstructor;
@@ -18,23 +18,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PastExamServiceImplement implements PastExamService {
 
-    private final PastExamQuestionRepository pastExamQuestionRepository;
+    private final PastExamRepository pastExamRepository;
 
     @Override
     public ResponseEntity<? super GetPastExamRoundsResponseDto> getPastExamRounds() {
 
-        List<PastExamQuestionEntity> pastExamQuestionEntities = new ArrayList<>();
+        List<PastExamEntity> pastExamEntities = new ArrayList<>();
 
         try {
             
-            pastExamQuestionEntities = pastExamQuestionRepository.findAllByOrderByPastExamRoundAsc();
+            pastExamEntities = pastExamRepository.findAllByOrderByPastExamRoundAsc();
 
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
         }
 
-        return GetPastExamRoundsResponseDto.success(pastExamQuestionEntities);
+        return GetPastExamRoundsResponseDto.success(pastExamEntities);
     }
     
 }
