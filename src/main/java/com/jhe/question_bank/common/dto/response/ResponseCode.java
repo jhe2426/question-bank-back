@@ -9,6 +9,7 @@ public interface ResponseCode {
     String USED_APPROVAL_CODE = "AU";
     String PHONE_NUMBER_AUTH_FAILED = "PAF";
     String APPROVAL_CODE_AUTH_FAILED = "AAF";
+    String PAST_EXAM_QUESTION_ID_NOT_FOUND = "NPE";
 
     String AUTHENTICATION_FAIL = "AF";
     String SIGN_IN_FAIL = "SF";

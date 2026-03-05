@@ -2,9 +2,11 @@ package com.jhe.question_bank.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jhe.question_bank.common.dto.response.past.exam.GetPastExamQuestionListResponseDto;
 import com.jhe.question_bank.common.dto.response.past.exam.GetPastExamRoundsResponseDto;
 import com.jhe.question_bank.service.PastExamService;
 
@@ -21,4 +23,12 @@ public class PastExamController {
         ResponseEntity<? super GetPastExamRoundsResponseDto> response = pastExamService.getPastExamRounds();
         return response;
     }
+
+    @GetMapping("/{pastExamId}")
+    public ResponseEntity<? super GetPastExamQuestionListResponseDto> getPastExamQuestionList(
+        @PathVariable("pastExamId") Integer pastExamId
+    ) {
+        ResponseEntity<? super GetPastExamQuestionListResponseDto> response = pastExamService.getPastExamQuestionList(pastExamId);
+        return response;
+    }   
 }

@@ -65,6 +65,11 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    public static ResponseEntity<ResponseDto> pastExamQuestionIdNotFound() {
+        ResponseDto body = new ResponseDto(ResponseCode.PAST_EXAM_QUESTION_ID_NOT_FOUND, ResponseMessage.PAST_EXAM_QUESTION_ID_NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
     public static ResponseEntity<ResponseDto> authenticationFail() {
         ResponseDto body = new ResponseDto(ResponseCode.AUTHENTICATION_FAIL, ResponseMessage.AUTHENTICATION_FAIL);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);

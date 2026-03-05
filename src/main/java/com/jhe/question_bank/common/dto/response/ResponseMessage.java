@@ -9,6 +9,7 @@ public interface ResponseMessage {
     String USED_APPROVAL_CODE = "Approval code already used.";
     String PHONE_NUMBER_AUTH_FAILED = "Phone number authentication failed.";
     String APPROVAL_CODE_AUTH_FAILED = "Approval code authentication failed.";
+    String PAST_EXAM_QUESTION_ID_NOT_FOUND = "The past exam question ID does not exist.";
 
     String AUTHENTICATION_FAIL = "Authentication failed.";
     String SIGN_IN_FAIL = "Sign in Fail.";
