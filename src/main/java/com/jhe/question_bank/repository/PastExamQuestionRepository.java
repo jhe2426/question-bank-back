@@ -11,5 +11,6 @@ import com.jhe.question_bank.common.entity.PastExamQuestionEntity;
 public interface  PastExamQuestionRepository extends JpaRepository<PastExamQuestionEntity, Integer> {
 
     List<PastExamQuestionEntity> findByPastExamIdOrderByQuestionOrderAsc(Integer pastExamId);
+    PastExamQuestionEntity findByQuestionIdAndPastExamId(Integer questionId, Integer pastExamId);
 
 }   

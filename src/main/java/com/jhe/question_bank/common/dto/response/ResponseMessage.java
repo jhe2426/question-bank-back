@@ -10,10 +10,12 @@ public interface ResponseMessage {
     String PHONE_NUMBER_AUTH_FAILED = "Phone number authentication failed.";
     String APPROVAL_CODE_AUTH_FAILED = "Approval code authentication failed.";
     String PAST_EXAM_QUESTION_ID_NOT_FOUND = "The past exam question ID does not exist.";
+    String QUESTION_ID_NOT_FOUND = "Question ID does not exist.";
 
     String AUTHENTICATION_FAIL = "Authentication failed.";
     String SIGN_IN_FAIL = "Sign in Fail.";
     String AUTHORIZATION_CODE_EXPIRED = "Authorization code has expired.";
+    String NOT_EXIST_USER_ID = "User ID does not exist.";
 
     String AUTH_CODE_ALREADY_SENT = "Authentication code already sent. Please try again later.";
 

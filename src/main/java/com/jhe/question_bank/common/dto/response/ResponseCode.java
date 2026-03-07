@@ -10,10 +10,12 @@ public interface ResponseCode {
     String PHONE_NUMBER_AUTH_FAILED = "PAF";
     String APPROVAL_CODE_AUTH_FAILED = "AAF";
     String PAST_EXAM_QUESTION_ID_NOT_FOUND = "NPE";
+    String QUESTION_ID_NOT_FOUND = "NQI";
 
     String AUTHENTICATION_FAIL = "AF";
     String SIGN_IN_FAIL = "SF";
     String AUTHORIZATION_CODE_EXPIRED = "AE";
+    String NOT_EXIST_USER_ID = "NUI";
 
     String AUTH_CODE_ALREADY_SENT = "AR";
 

@@ -9,5 +9,6 @@ import com.jhe.question_bank.common.entity.PastExamEntity;
 
 @Repository
 public interface PastExamRepository extends JpaRepository<PastExamEntity, Integer>{
+    PastExamEntity findByPastExamId(Integer pastExamId);
     List<PastExamEntity> findAllByOrderByPastExamRoundAsc();
 }

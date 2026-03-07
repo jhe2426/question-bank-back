@@ -70,6 +70,11 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    public static ResponseEntity<ResponseDto> questionIdNotFount() {
+        ResponseDto body = new ResponseDto(ResponseCode.QUESTION_ID_NOT_FOUND, ResponseMessage.QUESTION_ID_NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
     public static ResponseEntity<ResponseDto> authenticationFail() {
         ResponseDto body = new ResponseDto(ResponseCode.AUTHENTICATION_FAIL, ResponseMessage.AUTHENTICATION_FAIL);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
@@ -82,6 +87,11 @@ public class ResponseDto {
 
     public static ResponseEntity<ResponseDto> authorizationCodeExpired() {
         ResponseDto body = new ResponseDto(ResponseCode.AUTHORIZATION_CODE_EXPIRED, ResponseMessage.AUTHORIZATION_CODE_EXPIRED);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
+
+    public static ResponseEntity<ResponseDto> userNotFound() {
+        ResponseDto body = new ResponseDto(ResponseCode.NOT_EXIST_USER_ID, ResponseMessage.NOT_EXIST_USER_ID);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
