@@ -31,6 +31,17 @@ public class QuestionVO {
         this.option4 = questionEntity.getOption4();
     }
 
+    private QuestionVO(QuestionEntity questionEntity, int questionOrder) {
+        this.questionId = questionEntity.getQuestionId();
+        this.questionOrder = questionOrder;
+        this.questionText = questionEntity.getQuestionText();
+        this.imageUrl = questionEntity.getImageUrl();
+        this.option1 = questionEntity.getOption1();
+        this.option2 = questionEntity.getOption2();
+        this.option3 = questionEntity.getOption3();
+        this.option4 = questionEntity.getOption4();
+    }
+
     public static List<QuestionVO> getPastExamQuestionList(List<QuestionEntity> questionEntities, Map<Integer, PastExamQuestionEntity> pastExamMap) {
 
         List<QuestionVO> list = new ArrayList<>();
@@ -45,5 +56,17 @@ public class QuestionVO {
         }
 
         return list;
+    }
+
+    public static List<QuestionVO> getKillerExamQuestionList(List<QuestionEntity> questionEntities) {
+
+        List<QuestionVO> list = new ArrayList<>();
+
+        for (int index = 0; index < questionEntities.size(); index++) {
+            QuestionVO vo = new QuestionVO(questionEntities.get(index), index+1);
+            list.add(vo);
+        }
+
+        return list; 
     }
 }

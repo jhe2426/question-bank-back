@@ -49,4 +49,8 @@ public class UserEntity {
         this.gender = dto.getGender();
         this.registeredAt = now.format(dateTimeFormatter);
     }
+
+    public void setKillerExamRound(Integer killerExamRound) {
+        this.currentKillerExamRound = killerExamRound;
+    }
 }
