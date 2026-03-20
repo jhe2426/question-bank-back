@@ -96,7 +96,7 @@ public class PastExamServiceImplement implements PastExamService {
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseDto> postPastExamGrading(String userId, PostPastExamGradingRequestDto dto) {
+    public ResponseEntity<ResponseDto> postPastExamGrade(String userId, PostPastExamGradingRequestDto dto) {
 
         try {
 

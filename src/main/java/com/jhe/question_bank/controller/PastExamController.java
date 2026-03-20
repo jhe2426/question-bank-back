@@ -43,7 +43,7 @@ public class PastExamController {
         @AuthenticationPrincipal String userId,
         @RequestBody @Valid PostPastExamGradingRequestDto requestBody
     ) {
-        ResponseEntity<ResponseDto> response = pastExamService.postPastExamGrading(userId, requestBody);
+        ResponseEntity<ResponseDto> response = pastExamService.postPastExamGrade(userId, requestBody);
         return response;
     }
 }

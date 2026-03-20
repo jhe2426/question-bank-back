@@ -10,5 +10,5 @@ import com.jhe.question_bank.common.dto.response.past.exam.GetPastExamRoundsResp
 public interface PastExamService {
     public ResponseEntity<? super GetPastExamRoundsResponseDto> getPastExamRounds();
     public ResponseEntity<? super GetPastExamQuestionListResponseDto> getPastExamQuestionList(Integer pastExamId);
-    public ResponseEntity<ResponseDto> postPastExamGrading(String userId, PostPastExamGradingRequestDto dto);
+    public ResponseEntity<ResponseDto> postPastExamGrade(String userId, PostPastExamGradingRequestDto dto);
 }

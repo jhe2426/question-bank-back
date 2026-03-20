@@ -3,6 +3,7 @@ package com.jhe.question_bank.common.entity;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.jhe.question_bank.common.dto.request.killer.exam.PostKillerExamGradingRequestDto;
 import com.jhe.question_bank.common.dto.request.past.exam.PostPastExamGradingRequestDto;
 
 import jakarta.persistence.Entity;
@@ -38,6 +39,16 @@ public class UserProblemGroupEntity {
         this.questionType = dto.getQuestionType();
         this.detailedType = dto.getDetailedType();
         this.pastExamRound = pastExamRound;
+        this.totalScore = totalScore;
+        this.solvedAt = now.format(dateTimeFormatter);
+    }
+
+    public UserProblemGroupEntity(PostKillerExamGradingRequestDto dto, String userId, int totalScore) {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        this.userId = userId;
+        this.questionType = dto.getQuestionType();
         this.totalScore = totalScore;
         this.solvedAt = now.format(dateTimeFormatter);
     }

@@ -1,5 +1,6 @@
 package com.jhe.question_bank.common.entity;
 
+import com.jhe.question_bank.common.vo.KillerExamUserAnswerVO;
 import com.jhe.question_bank.common.vo.PastExamUserAnswerVO;
 
 import jakarta.persistence.Entity;
@@ -31,6 +32,13 @@ public class GroupQuestionEntity {
         this.userAnswer = userAnswerVO.getAnswer();
         this.isCorrect = isCorrect;
         this.questionOrder = questionOrder;
+    }
+
+    public GroupQuestionEntity (KillerExamUserAnswerVO userAnswerVO, boolean isCorrect) {
+        this.questionId = userAnswerVO.getQuestionId();
+        this.userAnswer = userAnswerVO.getAnswer();
+        this.isCorrect = isCorrect;
+        this.questionOrder = userAnswerVO.getQuestionOrder();
     }
 
     public void assignGroupId(Integer groupId) {

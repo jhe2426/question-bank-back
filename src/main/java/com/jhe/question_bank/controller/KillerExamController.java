@@ -3,12 +3,17 @@ package com.jhe.question_bank.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jhe.question_bank.common.dto.request.killer.exam.PostKillerExamGradingRequestDto;
 import com.jhe.question_bank.common.dto.response.killer.exam.GetKillerExamQuestionListResponseDto;
+import com.jhe.question_bank.common.dto.response.killer.exam.PostKillerExamGradingResponseDto;
 import com.jhe.question_bank.service.KillerExamService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -22,6 +27,15 @@ public class KillerExamController {
         @AuthenticationPrincipal String userId
     ) {
         ResponseEntity<? super GetKillerExamQuestionListResponseDto> response = killerExamService.getKillerExamQuestionList(userId);
+        return response;
+    }
+
+    @PostMapping("/grading")
+    public ResponseEntity<? super PostKillerExamGradingResponseDto> postKillerExamGrade(
+        @AuthenticationPrincipal String userId,
+        @RequestBody @Valid PostKillerExamGradingRequestDto requestBody
+    ) {
+        ResponseEntity<? super PostKillerExamGradingResponseDto> response = killerExamService.postPastExamGrade(userId, requestBody);
         return response;
     }
 }
