@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +12,7 @@ import com.jhe.question_bank.common.dto.request.past.exam.PostPastExamGradingReq
 import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.past.exam.GetPastExamQuestionListResponseDto;
 import com.jhe.question_bank.common.dto.response.past.exam.GetPastExamRoundsResponseDto;
+import com.jhe.question_bank.common.dto.response.past.exam.PostPastExamGradingResponseDto;
 import com.jhe.question_bank.common.entity.GroupQuestionEntity;
 import com.jhe.question_bank.common.entity.PastExamEntity;
 import com.jhe.question_bank.common.entity.PastExamQuestionEntity;
@@ -96,7 +96,8 @@ public class PastExamServiceImplement implements PastExamService {
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseDto> postPastExamGrade(String userId, PostPastExamGradingRequestDto dto) {
+    public ResponseEntity<? super PostPastExamGradingResponseDto> postPastExamGrade(String userId, PostPastExamGradingRequestDto dto) {
+        Integer groupId = null;
 
         try {
 
@@ -145,7 +146,7 @@ public class PastExamServiceImplement implements PastExamService {
             int totalScore = correctCount * 2;
             UserProblemGroupEntity userProblemGroupEntity = new UserProblemGroupEntity(dto, userId, pastExamRound, totalScore);
             userProblemGroupEntity = userProblemGroupRepository.save(userProblemGroupEntity);
-            Integer groupId = userProblemGroupEntity.getGroupId();
+            groupId = userProblemGroupEntity.getGroupId();
 
             for (GroupQuestionEntity groupQuestionEntity : groupQuestionEntities) {
                 groupQuestionEntity.assignGroupId(groupId);
@@ -160,7 +161,7 @@ public class PastExamServiceImplement implements PastExamService {
             return ResponseDto.databaseError();
         }
 
-        return ResponseDto.success(HttpStatus.CREATED);
+        return PostPastExamGradingResponseDto.success(groupId);
     }
     
 

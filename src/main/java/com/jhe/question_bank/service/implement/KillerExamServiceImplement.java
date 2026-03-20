@@ -69,12 +69,8 @@ public class KillerExamServiceImplement implements KillerExamService {
                 List<Integer> allIds = questionRepository.findIdsByTypeAndDifficulty(questionType, difficulty);
                 List<Integer> solvedQuestionIds = userSolvedHistoryRepository.findSolvedQuestionIdsBySessionId(userId, currentRound, sourceType);
 
-                System.out.println(allIds.toString());
-                System.out.println(solvedQuestionIds.toString());
-
                 allIds.removeAll(solvedQuestionIds);
                 candidateQuestionIds = allIds;
-                System.out.println(candidateQuestionIds.toString());
             }
 
             Collections.shuffle(candidateQuestionIds);
@@ -143,9 +139,9 @@ public class KillerExamServiceImplement implements KillerExamService {
                 groupQuestionEntity.assignGroupId(groupId);
             }
 
-            groupQuestionRepository.saveAllAndFlush(groupQuestionEntities);
-            userIncorrectQuestionRepository.saveAllAndFlush(incorrectQuestionEntities);
-            userSolvedHistoryRepository.saveAllAndFlush(userSolvedHistoryEntities);
+            groupQuestionRepository.saveAll(groupQuestionEntities);
+            userIncorrectQuestionRepository.saveAll(incorrectQuestionEntities);
+            userSolvedHistoryRepository.saveAll(userSolvedHistoryEntities);
 
         } catch (Exception exception) {
             exception.printStackTrace();

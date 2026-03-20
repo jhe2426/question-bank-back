@@ -13,6 +13,7 @@ import com.jhe.question_bank.common.dto.request.past.exam.PostPastExamGradingReq
 import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.past.exam.GetPastExamQuestionListResponseDto;
 import com.jhe.question_bank.common.dto.response.past.exam.GetPastExamRoundsResponseDto;
+import com.jhe.question_bank.common.dto.response.past.exam.PostPastExamGradingResponseDto;
 import com.jhe.question_bank.service.PastExamService;
 
 import jakarta.validation.Valid;
@@ -39,11 +40,11 @@ public class PastExamController {
     }   
 
     @PostMapping("/grading")
-    public ResponseEntity<ResponseDto> postPastExamGrade(
+    public ResponseEntity<? super PostPastExamGradingResponseDto> postPastExamGrade(
         @AuthenticationPrincipal String userId,
         @RequestBody @Valid PostPastExamGradingRequestDto requestBody
     ) {
-        ResponseEntity<ResponseDto> response = pastExamService.postPastExamGrade(userId, requestBody);
+        ResponseEntity<? super PostPastExamGradingResponseDto> response = pastExamService.postPastExamGrade(userId, requestBody);
         return response;
     }
 }
