@@ -70,8 +70,13 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
-    public static ResponseEntity<ResponseDto> questionIdNotFount() {
+    public static ResponseEntity<ResponseDto> questionIdNotFound() {
         ResponseDto body = new ResponseDto(ResponseCode.QUESTION_ID_NOT_FOUND, ResponseMessage.QUESTION_ID_NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    public static ResponseEntity<ResponseDto> noRemainingMockExamQuestions() {
+        ResponseDto body = new ResponseDto(ResponseCode.NO_REMAINING_MOCK_EXAM_QUESTIONS, ResponseMessage.NO_REMAINING_MOCK_EXAM_QUESTIONS);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 

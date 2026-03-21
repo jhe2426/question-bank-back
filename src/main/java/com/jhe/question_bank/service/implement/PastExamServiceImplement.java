@@ -118,13 +118,13 @@ public class PastExamServiceImplement implements PastExamService {
                 int questionId = userAnswer.getQuestionId();
                 int inputAnswer = userAnswer.getAnswer();
                 QuestionEntity questionEntity = questionRepository.findByQuestionId(questionId);
-                if (questionEntity == null) return ResponseDto.questionIdNotFount();
+                if (questionEntity == null) return ResponseDto.questionIdNotFound();
 
                 boolean isCorrect = questionEntity.getAnswer().equals(inputAnswer);
                 if (isCorrect) correctCount++;
 
                 PastExamQuestionEntity pastExamQuestionEntity = pastExamQuestionRepository.findByQuestionIdAndPastExamId(questionId, pastExamId);
-                if (pastExamQuestionEntity == null) return ResponseDto.questionIdNotFount();
+                if (pastExamQuestionEntity == null) return ResponseDto.questionIdNotFound();
 
                 Integer questionOrder = pastExamQuestionEntity.getQuestionOrder();
                 GroupQuestionEntity groupQuestionEntity = new GroupQuestionEntity(userAnswer, isCorrect, questionOrder);

@@ -19,4 +19,46 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Intege
     List<Integer> findIdsByTypeAndDifficulty(@Param("type") String type, @Param("difficulty") String difficulty);
 
     List<QuestionEntity> findAllByQuestionIdIn(List<Integer> questionIds);
+
+    @Query("""
+            SELECT q.questionId FROM questions q
+            WHERE q.chapterId = :chapterId
+                AND questionType = '모의고사'
+                AND q.difficulty = :difficulty
+                AND NOT EXISTS (
+                    SELECT 1 FROM userSolvedHistory ush
+                    WHERE ush.questionId = q.questionId
+                    AND ush.userId = :userId
+                    AND ush.sourceType = :sourceType
+                    AND ush.sessionId = :sessionId
+                )
+            """)
+    List<Integer> findUnsolvedMockExamQuestionIds(
+        @Param("chapterId") Integer chapterId,
+        @Param("difficulty") String difficulty,
+        @Param("userId") String userId,
+        @Param("sourceType") String sourceType,
+        @Param("sessionId") Integer sessionId
+    );
+
+    @Query("""
+            SELECT CASE
+                WHEN COUNT(DISTINCT ush.questionId) = (
+                    SELECT COUNT(q.questionId)
+                    FROM questions q
+                    WHERE q.questionType = '모의고사'
+                )
+                THEN true
+                ELSE false
+            END
+            FROM userSolvedHistory ush
+            WHERE ush.userId = :userId
+                AND ush.sourceType = :sourceType
+                AND ush.sessionId = :sessionId
+            """)
+    boolean isAllMockExamSolved(
+        @Param("userId") String userId,
+        @Param("sourceType") String sourceType,
+        @Param("sessionId") Integer sessionId
+    );
 }

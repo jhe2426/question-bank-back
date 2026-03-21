@@ -20,6 +20,8 @@ public class QuestionVO {
     private String option3;
     private String option4;
 
+    protected  QuestionVO() {}
+
     private QuestionVO(QuestionEntity questionEntity, PastExamQuestionEntity pastExamQuestionEntity) {
         this.questionId = questionEntity.getQuestionId();
         this.questionOrder = pastExamQuestionEntity.getQuestionOrder();
@@ -31,7 +33,7 @@ public class QuestionVO {
         this.option4 = questionEntity.getOption4();
     }
 
-    private QuestionVO(QuestionEntity questionEntity, int questionOrder) {
+    protected QuestionVO(QuestionEntity questionEntity, int questionOrder) {
         this.questionId = questionEntity.getQuestionId();
         this.questionOrder = questionOrder;
         this.questionText = questionEntity.getQuestionText();

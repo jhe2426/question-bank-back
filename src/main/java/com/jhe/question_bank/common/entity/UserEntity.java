@@ -50,7 +50,11 @@ public class UserEntity {
         this.registeredAt = now.format(dateTimeFormatter);
     }
 
-    public void setKillerExamRound(Integer killerExamRound) {
+    public void updateKillerExamRound(Integer killerExamRound) {
         this.currentKillerExamRound = killerExamRound;
+    }
+
+    public void updateMockExamRound(Integer mockExamRound) {
+        this.currentMockExamRound = mockExamRound;
     }
 }

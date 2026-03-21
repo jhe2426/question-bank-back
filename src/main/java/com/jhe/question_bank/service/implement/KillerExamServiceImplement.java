@@ -26,6 +26,7 @@ import com.jhe.question_bank.repository.UserRepository;
 import com.jhe.question_bank.repository.UserSolvedHistoryRepository;
 import com.jhe.question_bank.service.KillerExamService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -39,6 +40,7 @@ public class KillerExamServiceImplement implements KillerExamService {
     private final UserSolvedHistoryRepository userSolvedHistoryRepository;
     private final UserIncorrectQuestionRepository userIncorrectQuestionRepository;
     
+    @Transactional
     @Override
     public ResponseEntity<? super GetKillerExamQuestionListResponseDto> getKillerExamQuestionList(String userId) {
         List<QuestionEntity> questionEntities = new ArrayList<>();
@@ -62,7 +64,7 @@ public class KillerExamServiceImplement implements KillerExamService {
 
             if (solvedCountInSessionId >= totalKillerExamQuestionCount) {
                 currentRound++;
-                userEntity.setKillerExamRound(currentRound);
+                userEntity.updateKillerExamRound(currentRound);
 
                 candidateQuestionIds = questionRepository.findIdsByTypeAndDifficulty(questionType, difficulty);
             } else {
@@ -91,6 +93,7 @@ public class KillerExamServiceImplement implements KillerExamService {
         return GetKillerExamQuestionListResponseDto.success(questionEntities, currentRound);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<? super PostKillerExamGradingResponseDto> postPastExamGrade(String userId, PostKillerExamGradingRequestDto dto) {
         Integer groupId = null;
@@ -110,7 +113,7 @@ public class KillerExamServiceImplement implements KillerExamService {
                 int questionId = userAnswer.getQuestionId();
                 int inputAnswer = userAnswer.getAnswer();
                 QuestionEntity questionEntity = questionRepository.findByQuestionId(questionId);
-                if (questionEntity == null) return ResponseDto.questionIdNotFount();
+                if (questionEntity == null) return ResponseDto.questionIdNotFound();
 
                 boolean isCorrect = questionEntity.getAnswer().equals(inputAnswer);
                 if (isCorrect) correctCount++;
