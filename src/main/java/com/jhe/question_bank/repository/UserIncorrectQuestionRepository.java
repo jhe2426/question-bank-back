@@ -8,5 +8,5 @@ import com.jhe.question_bank.common.entity.primaryKey.UserIncorrectQuestionPk;
 
 @Repository
 public interface UserIncorrectQuestionRepository extends JpaRepository<UserIncorrectQuestionEntity, UserIncorrectQuestionPk>{
-    UserIncorrectQuestionEntity findByUserIdAndQuestionId(String userId, Integer questionId);
+    UserIncorrectQuestionEntity findByUserIdAndQuestionIdAndSourceType(String userId, Integer questionId, String sourceType);
 }

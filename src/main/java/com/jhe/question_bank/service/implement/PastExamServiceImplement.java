@@ -117,6 +117,8 @@ public class PastExamServiceImplement implements PastExamService {
             for (PastExamUserAnswerVO userAnswer : userAnswerList) {
                 int questionId = userAnswer.getQuestionId();
                 int inputAnswer = userAnswer.getAnswer();
+                String sourceType = "기출문제";
+
                 QuestionEntity questionEntity = questionRepository.findByQuestionId(questionId);
                 if (questionEntity == null) return ResponseDto.questionIdNotFound();
 
@@ -134,10 +136,10 @@ public class PastExamServiceImplement implements PastExamService {
                 userSolvedHistoryEntities.add(userSolvedHistoryEntity);
 
                 if (!isCorrect) {
-                    UserIncorrectQuestionEntity userIncorrectQuestionEntity = userIncorrectQuestionRepository.findByUserIdAndQuestionId(userId, questionId);
+                    UserIncorrectQuestionEntity userIncorrectQuestionEntity = userIncorrectQuestionRepository.findByUserIdAndQuestionIdAndSourceType(userId, questionId, sourceType);
                     if (userIncorrectQuestionEntity != null) continue;
 
-                    userIncorrectQuestionEntity = new UserIncorrectQuestionEntity(userId, questionId);
+                    userIncorrectQuestionEntity = new UserIncorrectQuestionEntity(userId, questionId, sourceType);
                     incorrectQuestionEntities.add(userIncorrectQuestionEntity);
                 }
 

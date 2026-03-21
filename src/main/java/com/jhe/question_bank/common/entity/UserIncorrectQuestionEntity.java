@@ -24,14 +24,16 @@ public class UserIncorrectQuestionEntity {
     private String userId;
     @Id
     private Integer questionId;
+    private String sourceType;
     private String solvedAt;
 
-    public UserIncorrectQuestionEntity(String userId, Integer questionId) {
+    public UserIncorrectQuestionEntity(String userId, Integer questionId, String sourceType) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"); 
 
         this.userId = userId;
         this.questionId = questionId;
+        this.sourceType = sourceType;
         this.solvedAt = now.format(dateTimeFormatter);
     }
 }
