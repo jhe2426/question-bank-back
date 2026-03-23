@@ -97,7 +97,7 @@ public class MockExamServiceImplement implements MockExamService {
 
                     candidateQuestionIds = questionRepository.findUnsolvedMockExamQuestionIds(chapterId, difficulty.getDescription(), userId, sourceType, currentRound);
                 } else {
-                    return ResponseDto.noRemainingMockExamQuestions();
+                    return GetMockExamQuestionListResponseDto.success(currentRound, questionEntities, hasExplanation);
                 }
 
             }

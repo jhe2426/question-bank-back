@@ -17,7 +17,7 @@ public class GetKillerExamQuestionListResponseDto extends ResponseDto {
     private Integer currentKillerExamRound;
 
     private GetKillerExamQuestionListResponseDto(List<QuestionEntity> questionEntities, Integer currentKillerExamRound) {
-        this.questions = QuestionVO.getKillerExamQuestionList(questionEntities);
+        this.questions = QuestionVO.getQuestionList(questionEntities);
         this.currentKillerExamRound = currentKillerExamRound;
     }
 

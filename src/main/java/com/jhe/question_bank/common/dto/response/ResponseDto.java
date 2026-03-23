@@ -75,11 +75,6 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
-    public static ResponseEntity<ResponseDto> noRemainingMockExamQuestions() {
-        ResponseDto body = new ResponseDto(ResponseCode.NO_REMAINING_MOCK_EXAM_QUESTIONS, ResponseMessage.NO_REMAINING_MOCK_EXAM_QUESTIONS);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
-    }
-
     public static ResponseEntity<ResponseDto> authenticationFail() {
         ResponseDto body = new ResponseDto(ResponseCode.AUTHENTICATION_FAIL, ResponseMessage.AUTHENTICATION_FAIL);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);

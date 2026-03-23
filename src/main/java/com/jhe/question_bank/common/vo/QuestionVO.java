@@ -60,7 +60,7 @@ public class QuestionVO {
         return list;
     }
 
-    public static List<QuestionVO> getKillerExamQuestionList(List<QuestionEntity> questionEntities) {
+    public static List<QuestionVO> getQuestionList(List<QuestionEntity> questionEntities) {
 
         List<QuestionVO> list = new ArrayList<>();
 
