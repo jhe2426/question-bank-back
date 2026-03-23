@@ -15,8 +15,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PostMockExamGradingRequestDto {
     @NotBlank
-    private String sourceType;
-    @NotBlank
     private String detailedType;
     @NotNull
     private Integer sessionId;

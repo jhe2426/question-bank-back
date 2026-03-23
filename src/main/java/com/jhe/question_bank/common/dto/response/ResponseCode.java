@@ -11,6 +11,7 @@ public interface ResponseCode {
     String APPROVAL_CODE_AUTH_FAILED = "AAF";
     String PAST_EXAM_QUESTION_ID_NOT_FOUND = "NPE";
     String QUESTION_ID_NOT_FOUND = "NQI";
+    String INCORRECT_QUESTION_NOT_EXISTS = "NIQ";
 
     String AUTHENTICATION_FAIL = "AF";
     String SIGN_IN_FAIL = "SF";

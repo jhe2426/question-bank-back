@@ -11,6 +11,7 @@ public interface ResponseMessage {
     String APPROVAL_CODE_AUTH_FAILED = "Approval code authentication failed.";
     String PAST_EXAM_QUESTION_ID_NOT_FOUND = "The past exam question ID does not exist.";
     String QUESTION_ID_NOT_FOUND = "Question ID does not exist.";
+    String INCORRECT_QUESTION_NOT_EXISTS = "No incorrect question found for the given questionId.";
 
     String AUTHENTICATION_FAIL = "Authentication failed.";
     String SIGN_IN_FAIL = "Sign in Fail.";

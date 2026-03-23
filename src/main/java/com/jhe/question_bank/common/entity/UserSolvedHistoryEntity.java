@@ -56,4 +56,16 @@ public class UserSolvedHistoryEntity {
         this.sourceType = sourceType;
         this.solvedAt = now.format(dateTimeFormatter);
     }
+
+    public UserSolvedHistoryEntity(UserAnswerVO userAnswerVO, String userId, boolean isCorrect, String sourceType) {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        this.userId = userId;
+        this.questionId = userAnswerVO.getQuestionId();
+        this.userAnswer = userAnswerVO.getAnswer();
+        this.isCorrect = isCorrect;
+        this.sourceType = sourceType;
+        this.solvedAt = now.format(dateTimeFormatter);
+    }
 }

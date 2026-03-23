@@ -3,6 +3,7 @@ package com.jhe.question_bank.common.entity;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.jhe.question_bank.common.dto.request.incorrectquestion.PostIncorrectQuestionGradingRequestDto;
 import com.jhe.question_bank.common.dto.request.killer.exam.PostKillerExamGradingRequestDto;
 import com.jhe.question_bank.common.dto.request.mock.exam.PostMockExamGradingRequestDto;
 import com.jhe.question_bank.common.dto.request.past.exam.PostPastExamGradingRequestDto;
@@ -32,34 +33,45 @@ public class UserProblemGroupEntity {
     private Integer totalScore;
     private String solvedAt;
 
-    public UserProblemGroupEntity(PostPastExamGradingRequestDto dto, String userId, int pastExamRound, int totalScore) {
+    public UserProblemGroupEntity(PostPastExamGradingRequestDto dto, String sourceType, String userId, int pastExamRound, int totalScore) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         this.userId = userId;
-        this.sourceType = dto.getSourceType();
+        this.sourceType = sourceType;
         this.detailedType = dto.getDetailedType();
         this.pastExamRound = pastExamRound;
         this.totalScore = totalScore;
         this.solvedAt = now.format(dateTimeFormatter);
     }
 
-    public UserProblemGroupEntity(PostKillerExamGradingRequestDto dto, String userId, int totalScore) {
+    public UserProblemGroupEntity(PostKillerExamGradingRequestDto dto, String sourceType, String userId, int totalScore) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         this.userId = userId;
-        this.sourceType = dto.getSourceType();
+        this.sourceType = sourceType;
         this.totalScore = totalScore;
         this.solvedAt = now.format(dateTimeFormatter);
     }
 
-    public UserProblemGroupEntity(PostMockExamGradingRequestDto dto, String userId, int totalScore) {
+    public UserProblemGroupEntity(PostMockExamGradingRequestDto dto, String sourceType, String userId, int totalScore) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         this.userId = userId;
-        this.sourceType = dto.getSourceType();
+        this.sourceType = sourceType;
+        this.detailedType = dto.getDetailedType();
+        this.totalScore = totalScore;
+        this.solvedAt = now.format(dateTimeFormatter);
+    }
+
+    public UserProblemGroupEntity(PostIncorrectQuestionGradingRequestDto dto, String sourceType, String userId, int totalScore) {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        this.userId = userId;
+        this.sourceType = sourceType;
         this.detailedType = dto.getDetailedType();
         this.totalScore = totalScore;
         this.solvedAt = now.format(dateTimeFormatter);

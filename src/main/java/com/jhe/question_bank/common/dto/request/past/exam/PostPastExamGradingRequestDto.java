@@ -15,8 +15,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PostPastExamGradingRequestDto {
     @NotBlank
-    private String sourceType;
-    @NotBlank
     private String detailedType;
     @NotNull
     private Integer pastExamId;

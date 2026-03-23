@@ -129,7 +129,8 @@ public class MockExamServiceImplement implements MockExamService {
             
             List<UserAnswerVO> userAnswerList = dto.getUserAnswers();
             int sessionId = dto.getSessionId();
-            
+            String sourceType = "모의고사";
+
             int correctCount = 0;
 
             List<GroupQuestionEntity> groupQuestionEntities = new ArrayList<>();
@@ -139,7 +140,6 @@ public class MockExamServiceImplement implements MockExamService {
             for (UserAnswerVO userAnswer: userAnswerList) {
                 int questionId = userAnswer.getQuestionId();
                 int inputAnswer = userAnswer.getAnswer();
-                String sourceType = "모의고사";
 
                 QuestionEntity questionEntity = questionRepository.findByQuestionId(questionId);
                 if (questionEntity == null) return ResponseDto.questionIdNotFound();
@@ -166,7 +166,7 @@ public class MockExamServiceImplement implements MockExamService {
             int totalQuestionCount = userAnswerList.size();
             if (totalQuestionCount > 0) totalScore = (int) Math.round((double) correctCount / totalQuestionCount * 100 );
             
-            UserProblemGroupEntity userProblemGroupEntity = new UserProblemGroupEntity(dto, userId, totalScore);
+            UserProblemGroupEntity userProblemGroupEntity = new UserProblemGroupEntity(dto, sourceType, userId, totalScore);
             userProblemGroupEntity = userProblemGroupRepository.save(userProblemGroupEntity);
             groupId = userProblemGroupEntity.getGroupId();
 

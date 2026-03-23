@@ -103,7 +103,8 @@ public class PastExamServiceImplement implements PastExamService {
 
             List<PastExamUserAnswerVO> userAnswerList = dto.getUserAnswers();
             int pastExamId = dto.getPastExamId();
-            
+            String sourceType = "기출문제";
+
             int correctCount = 0;
 
             List<GroupQuestionEntity> groupQuestionEntities = new ArrayList<>();
@@ -117,7 +118,6 @@ public class PastExamServiceImplement implements PastExamService {
             for (PastExamUserAnswerVO userAnswer : userAnswerList) {
                 int questionId = userAnswer.getQuestionId();
                 int inputAnswer = userAnswer.getAnswer();
-                String sourceType = "기출문제";
 
                 QuestionEntity questionEntity = questionRepository.findByQuestionId(questionId);
                 if (questionEntity == null) return ResponseDto.questionIdNotFound();
@@ -146,7 +146,7 @@ public class PastExamServiceImplement implements PastExamService {
             }
 
             int totalScore = correctCount * 2;
-            UserProblemGroupEntity userProblemGroupEntity = new UserProblemGroupEntity(dto, userId, pastExamRound, totalScore);
+            UserProblemGroupEntity userProblemGroupEntity = new UserProblemGroupEntity(dto, sourceType, userId, pastExamRound, totalScore);
             userProblemGroupEntity = userProblemGroupRepository.save(userProblemGroupEntity);
             groupId = userProblemGroupEntity.getGroupId();
 

@@ -102,6 +102,7 @@ public class KillerExamServiceImplement implements KillerExamService {
 
             List<UserAnswerVO> userAnswerList = dto.getUserAnswers();
             int sessionId = dto.getSessionId();
+            String sourceType = "킬러문제";
             
             int correctCount = 0;
 
@@ -112,7 +113,6 @@ public class KillerExamServiceImplement implements KillerExamService {
             for (UserAnswerVO userAnswer: userAnswerList) {
                 int questionId = userAnswer.getQuestionId();
                 int inputAnswer = userAnswer.getAnswer();
-                String sourceType = "킬러문제";
 
                 QuestionEntity questionEntity = questionRepository.findByQuestionId(questionId);
                 if (questionEntity == null) return ResponseDto.questionIdNotFound();
@@ -139,7 +139,7 @@ public class KillerExamServiceImplement implements KillerExamService {
             int totalQuestionCount = userAnswerList.size();
             if (totalQuestionCount > 0) totalScore = (int) Math.round((double) correctCount / totalQuestionCount * 100 );
 
-            UserProblemGroupEntity userProblemGroupEntity = new UserProblemGroupEntity(dto, userId, totalScore);
+            UserProblemGroupEntity userProblemGroupEntity = new UserProblemGroupEntity(dto, sourceType, userId, totalScore);
             userProblemGroupEntity = userProblemGroupRepository.save(userProblemGroupEntity);
             groupId = userProblemGroupEntity.getGroupId();
 
