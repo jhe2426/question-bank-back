@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PostKillerExamGradingRequestDto {
     @NotBlank
-    private String questionType;
+    private String sourceType;
     @NotNull
     private Integer sessionId;
     @NotNull

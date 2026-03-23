@@ -25,7 +25,7 @@ public class UserProblemGroupEntity {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer groupId;
     private String userId;
-    private String questionType;
+    private String sourceType;
     private String detailedType;
     private Integer pastExamRound;
     private Integer totalScore;
@@ -36,7 +36,7 @@ public class UserProblemGroupEntity {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         this.userId = userId;
-        this.questionType = dto.getQuestionType();
+        this.sourceType = dto.getSourceType();
         this.detailedType = dto.getDetailedType();
         this.pastExamRound = pastExamRound;
         this.totalScore = totalScore;
@@ -48,7 +48,7 @@ public class UserProblemGroupEntity {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         this.userId = userId;
-        this.questionType = dto.getQuestionType();
+        this.sourceType = dto.getSourceType();
         this.totalScore = totalScore;
         this.solvedAt = now.format(dateTimeFormatter);
     }
