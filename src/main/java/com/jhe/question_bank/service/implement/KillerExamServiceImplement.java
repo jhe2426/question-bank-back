@@ -135,7 +135,10 @@ public class KillerExamServiceImplement implements KillerExamService {
                 }
             }
 
-            int totalScore = correctCount * 10;
+            int totalScore = 0;
+            int totalQuestionCount = userAnswerList.size();
+            if (totalQuestionCount > 0) totalScore = (int) Math.round((double) correctCount / totalQuestionCount * 100 );
+
             UserProblemGroupEntity userProblemGroupEntity = new UserProblemGroupEntity(dto, userId, totalScore);
             userProblemGroupEntity = userProblemGroupRepository.save(userProblemGroupEntity);
             groupId = userProblemGroupEntity.getGroupId();
