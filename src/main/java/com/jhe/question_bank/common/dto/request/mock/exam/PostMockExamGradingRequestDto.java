@@ -1,4 +1,4 @@
-package com.jhe.question_bank.common.dto.request.killer.exam;
+package com.jhe.question_bank.common.dto.request.mock.exam;
 
 import java.util.List;
 
@@ -13,9 +13,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PostKillerExamGradingRequestDto {
+public class PostMockExamGradingRequestDto {
     @NotBlank
     private String sourceType;
+    @NotBlank
+    private String detailedType;
     @NotNull
     private Integer sessionId;
     @NotNull

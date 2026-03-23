@@ -3,8 +3,8 @@ package com.jhe.question_bank.common.entity;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.jhe.question_bank.common.vo.KillerExamUserAnswerVO;
 import com.jhe.question_bank.common.vo.PastExamUserAnswerVO;
+import com.jhe.question_bank.common.vo.UserAnswerVO;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -44,7 +44,7 @@ public class UserSolvedHistoryEntity {
         this.solvedAt = now.format(dateTimeFormatter);
     }
 
-    public UserSolvedHistoryEntity(KillerExamUserAnswerVO userAnswerVO, String userId, Integer sessionId, boolean isCorrect) {
+    public UserSolvedHistoryEntity(UserAnswerVO userAnswerVO, String userId, Integer sessionId, boolean isCorrect, String sourceType) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -53,7 +53,7 @@ public class UserSolvedHistoryEntity {
         this.sessionId = sessionId;
         this.userAnswer = userAnswerVO.getAnswer();
         this.isCorrect = isCorrect;
-        this.sourceType = "킬러문제";
+        this.sourceType = sourceType;
         this.solvedAt = now.format(dateTimeFormatter);
     }
 }

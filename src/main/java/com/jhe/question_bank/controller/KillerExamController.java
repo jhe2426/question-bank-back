@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jhe.question_bank.common.dto.request.killer.exam.PostKillerExamGradingRequestDto;
+import com.jhe.question_bank.common.dto.response.grading.PostExamGradingResponseDto;
 import com.jhe.question_bank.common.dto.response.killer.exam.GetKillerExamQuestionListResponseDto;
-import com.jhe.question_bank.common.dto.response.killer.exam.PostKillerExamGradingResponseDto;
 import com.jhe.question_bank.service.KillerExamService;
 
 import jakarta.validation.Valid;
@@ -31,11 +31,11 @@ public class KillerExamController {
     }
 
     @PostMapping("/grading")
-    public ResponseEntity<? super PostKillerExamGradingResponseDto> postKillerExamGrade(
+    public ResponseEntity<? super PostExamGradingResponseDto> postKillerExamGrade(
         @AuthenticationPrincipal String userId,
         @RequestBody @Valid PostKillerExamGradingRequestDto requestBody
     ) {
-        ResponseEntity<? super PostKillerExamGradingResponseDto> response = killerExamService.postPastExamGrade(userId, requestBody);
+        ResponseEntity<? super PostExamGradingResponseDto> response = killerExamService.postPastExamGrade(userId, requestBody);
         return response;
     }
 }

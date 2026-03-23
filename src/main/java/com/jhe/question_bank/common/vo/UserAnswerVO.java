@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class KillerExamUserAnswerVO {
+public class UserAnswerVO {
     @NotNull
     private Integer questionId;
     @NotNull

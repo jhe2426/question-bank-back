@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jhe.question_bank.common.dto.request.past.exam.PostPastExamGradingRequestDto;
-import com.jhe.question_bank.common.dto.response.ResponseDto;
+import com.jhe.question_bank.common.dto.response.grading.PostExamGradingResponseDto;
 import com.jhe.question_bank.common.dto.response.past.exam.GetPastExamQuestionListResponseDto;
 import com.jhe.question_bank.common.dto.response.past.exam.GetPastExamRoundsResponseDto;
-import com.jhe.question_bank.common.dto.response.past.exam.PostPastExamGradingResponseDto;
 import com.jhe.question_bank.service.PastExamService;
 
 import jakarta.validation.Valid;
@@ -40,11 +39,11 @@ public class PastExamController {
     }   
 
     @PostMapping("/grading")
-    public ResponseEntity<? super PostPastExamGradingResponseDto> postPastExamGrade(
+    public ResponseEntity<? super PostExamGradingResponseDto> postPastExamGrade(
         @AuthenticationPrincipal String userId,
         @RequestBody @Valid PostPastExamGradingRequestDto requestBody
     ) {
-        ResponseEntity<? super PostPastExamGradingResponseDto> response = pastExamService.postPastExamGrade(userId, requestBody);
+        ResponseEntity<? super PostExamGradingResponseDto> response = pastExamService.postPastExamGrade(userId, requestBody);
         return response;
     }
 }

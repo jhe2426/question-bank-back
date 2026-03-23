@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.jhe.question_bank.common.dto.request.past.exam.PostPastExamGradingRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
+import com.jhe.question_bank.common.dto.response.grading.PostExamGradingResponseDto;
 import com.jhe.question_bank.common.dto.response.past.exam.GetPastExamQuestionListResponseDto;
 import com.jhe.question_bank.common.dto.response.past.exam.GetPastExamRoundsResponseDto;
-import com.jhe.question_bank.common.dto.response.past.exam.PostPastExamGradingResponseDto;
 import com.jhe.question_bank.common.entity.GroupQuestionEntity;
 import com.jhe.question_bank.common.entity.PastExamEntity;
 import com.jhe.question_bank.common.entity.PastExamQuestionEntity;
@@ -96,7 +96,7 @@ public class PastExamServiceImplement implements PastExamService {
 
     @Override
     @Transactional
-    public ResponseEntity<? super PostPastExamGradingResponseDto> postPastExamGrade(String userId, PostPastExamGradingRequestDto dto) {
+    public ResponseEntity<? super PostExamGradingResponseDto> postPastExamGrade(String userId, PostPastExamGradingRequestDto dto) {
         Integer groupId = null;
 
         try {
@@ -163,7 +163,7 @@ public class PastExamServiceImplement implements PastExamService {
             return ResponseDto.databaseError();
         }
 
-        return PostPastExamGradingResponseDto.success(groupId);
+        return PostExamGradingResponseDto.success(groupId);
     }
     
 

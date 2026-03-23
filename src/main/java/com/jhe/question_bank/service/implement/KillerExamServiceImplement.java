@@ -9,15 +9,15 @@ import org.springframework.stereotype.Service;
 
 import com.jhe.question_bank.common.dto.request.killer.exam.PostKillerExamGradingRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
+import com.jhe.question_bank.common.dto.response.grading.PostExamGradingResponseDto;
 import com.jhe.question_bank.common.dto.response.killer.exam.GetKillerExamQuestionListResponseDto;
-import com.jhe.question_bank.common.dto.response.killer.exam.PostKillerExamGradingResponseDto;
 import com.jhe.question_bank.common.entity.GroupQuestionEntity;
 import com.jhe.question_bank.common.entity.QuestionEntity;
 import com.jhe.question_bank.common.entity.UserEntity;
 import com.jhe.question_bank.common.entity.UserIncorrectQuestionEntity;
 import com.jhe.question_bank.common.entity.UserProblemGroupEntity;
 import com.jhe.question_bank.common.entity.UserSolvedHistoryEntity;
-import com.jhe.question_bank.common.vo.KillerExamUserAnswerVO;
+import com.jhe.question_bank.common.vo.UserAnswerVO;
 import com.jhe.question_bank.repository.GroupQuestionRepository;
 import com.jhe.question_bank.repository.QuestionRepository;
 import com.jhe.question_bank.repository.UserIncorrectQuestionRepository;
@@ -95,12 +95,12 @@ public class KillerExamServiceImplement implements KillerExamService {
 
     @Transactional
     @Override
-    public ResponseEntity<? super PostKillerExamGradingResponseDto> postPastExamGrade(String userId, PostKillerExamGradingRequestDto dto) {
+    public ResponseEntity<? super PostExamGradingResponseDto> postPastExamGrade(String userId, PostKillerExamGradingRequestDto dto) {
         Integer groupId = null;
 
         try {
 
-            List<KillerExamUserAnswerVO> userAnswerList = dto.getUserAnswers();
+            List<UserAnswerVO> userAnswerList = dto.getUserAnswers();
             int sessionId = dto.getSessionId();
             
             int correctCount = 0;
@@ -109,7 +109,7 @@ public class KillerExamServiceImplement implements KillerExamService {
             List<UserIncorrectQuestionEntity> incorrectQuestionEntities = new ArrayList<>();
             List<UserSolvedHistoryEntity> userSolvedHistoryEntities = new ArrayList<>();
 
-            for (KillerExamUserAnswerVO userAnswer: userAnswerList) {
+            for (UserAnswerVO userAnswer: userAnswerList) {
                 int questionId = userAnswer.getQuestionId();
                 int inputAnswer = userAnswer.getAnswer();
                 String sourceType = "킬러문제";
@@ -123,7 +123,7 @@ public class KillerExamServiceImplement implements KillerExamService {
                 GroupQuestionEntity groupQuestionEntity = new GroupQuestionEntity(userAnswer, isCorrect);
                 groupQuestionEntities.add(groupQuestionEntity);
 
-                UserSolvedHistoryEntity userSolvedHistoryEntity = new UserSolvedHistoryEntity(userAnswer, userId, sessionId, isCorrect);
+                UserSolvedHistoryEntity userSolvedHistoryEntity = new UserSolvedHistoryEntity(userAnswer, userId, sessionId, isCorrect, sourceType);
                 userSolvedHistoryEntities.add(userSolvedHistoryEntity);
 
                 if (!isCorrect) {
@@ -153,7 +153,7 @@ public class KillerExamServiceImplement implements KillerExamService {
             return ResponseDto.databaseError();
         }
 
-        return PostKillerExamGradingResponseDto.success(groupId);
+        return PostExamGradingResponseDto.success(groupId);
     }
     
 }

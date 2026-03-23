@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import com.jhe.question_bank.common.dto.request.killer.exam.PostKillerExamGradingRequestDto;
+import com.jhe.question_bank.common.dto.request.mock.exam.PostMockExamGradingRequestDto;
 import com.jhe.question_bank.common.dto.request.past.exam.PostPastExamGradingRequestDto;
 
 import jakarta.persistence.Entity;
@@ -49,6 +50,17 @@ public class UserProblemGroupEntity {
 
         this.userId = userId;
         this.sourceType = dto.getSourceType();
+        this.totalScore = totalScore;
+        this.solvedAt = now.format(dateTimeFormatter);
+    }
+
+    public UserProblemGroupEntity(PostMockExamGradingRequestDto dto, String userId, int totalScore) {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        this.userId = userId;
+        this.sourceType = dto.getSourceType();
+        this.detailedType = dto.getDetailedType();
         this.totalScore = totalScore;
         this.solvedAt = now.format(dateTimeFormatter);
     }
