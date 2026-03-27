@@ -46,7 +46,7 @@ public class WebSecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(request -> request
                 .requestMatchers(RequestPattern.AUTH_API + "/logout").authenticated()
-                .requestMatchers(RequestPattern.AUTH_API, RequestPattern.AUTH_API + "/**").permitAll()
+                .requestMatchers(RequestPattern.AUTH_API, RequestPattern.AUTH_API + "/**", "/api/v1/file", "/api/v1/file/**").permitAll()
                 .anyRequest().authenticated() 
             )
             .exceptionHandling(exception -> exception
