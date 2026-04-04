@@ -12,11 +12,14 @@ public interface ResponseMessage {
     String PAST_EXAM_QUESTION_ID_NOT_FOUND = "The past exam question ID does not exist.";
     String QUESTION_ID_NOT_FOUND = "Question ID does not exist.";
     String INCORRECT_QUESTION_NOT_EXISTS = "No incorrect question found for the given questionId.";
+    String QUESTION_GROUP_NOT_EXISTS = "The question group ID does not exist.";
 
     String AUTHENTICATION_FAIL = "Authentication failed.";
     String SIGN_IN_FAIL = "Sign in Fail.";
     String AUTHORIZATION_CODE_EXPIRED = "Authorization code has expired.";
     String NOT_EXIST_USER_ID = "User ID does not exist.";
+
+    String NO_PERMISSION = "No Permission.";
 
     String AUTH_CODE_ALREADY_SENT = "Authentication code already sent. Please try again later.";
 

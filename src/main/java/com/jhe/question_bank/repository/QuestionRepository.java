@@ -15,22 +15,22 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Intege
 
     int countByQuestionTypeAndDifficulty(String questionType, String difficulty);
 
-    @Query("SELECT q.questionId FROM questions q WHERE q.questionType = :type AND q.difficulty = :difficulty")
+    @Query("SELECT Q.questionId FROM questions Q WHERE Q.questionType = :type AND Q.difficulty = :difficulty")
     List<Integer> findIdsByTypeAndDifficulty(@Param("type") String type, @Param("difficulty") String difficulty);
 
     List<QuestionEntity> findAllByQuestionIdIn(List<Integer> questionIds);
 
     @Query("""
-            SELECT q.questionId FROM questions q
-            WHERE q.chapterId = :chapterId
+            SELECT Q.questionId FROM questions Q
+            WHERE Q.chapterId = :chapterId
                 AND questionType = '모의고사'
-                AND q.difficulty = :difficulty
+                AND Q.difficulty = :difficulty
                 AND NOT EXISTS (
-                    SELECT 1 FROM userSolvedHistory ush
-                    WHERE ush.questionId = q.questionId
-                    AND ush.userId = :userId
-                    AND ush.sourceType = :sourceType
-                    AND ush.sessionId = :sessionId
+                    SELECT 1 FROM userSolvedHistory USH
+                    WHERE USH.questionId = Q.questionId
+                    AND USH.userId = :userId
+                    AND USH.sourceType = :sourceType
+                    AND USH.sessionId = :sessionId
                 )
             """)
     List<Integer> findUnsolvedMockExamQuestionIds(
@@ -43,18 +43,18 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Intege
 
     @Query("""
             SELECT CASE
-                WHEN COUNT(DISTINCT ush.questionId) = (
-                    SELECT COUNT(q.questionId)
-                    FROM questions q
-                    WHERE q.questionType = '모의고사'
+                WHEN COUNT(DISTINCT USH.questionId) = (
+                    SELECT COUNT(Q.questionId)
+                    FROM questions Q
+                    WHERE Q.questionType = '모의고사'
                 )
                 THEN true
                 ELSE false
             END
-            FROM userSolvedHistory ush
-            WHERE ush.userId = :userId
-                AND ush.sourceType = :sourceType
-                AND ush.sessionId = :sessionId
+            FROM userSolvedHistory USH
+            WHERE USH.userId = :userId
+                AND USH.sourceType = :sourceType
+                AND USH.sessionId = :sessionId
             """)
     boolean isAllMockExamSolved(
         @Param("userId") String userId,

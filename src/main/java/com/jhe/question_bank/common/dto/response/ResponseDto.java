@@ -80,6 +80,11 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    public static ResponseEntity<ResponseDto> questionGroupNotExists() {
+        ResponseDto body = new ResponseDto(ResponseCode.QUESTION_GROUP_NOT_EXISTS, ResponseMessage.QUESTION_GROUP_NOT_EXISTS);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
     public static ResponseEntity<ResponseDto> authenticationFail() {
         ResponseDto body = new ResponseDto(ResponseCode.AUTHENTICATION_FAIL, ResponseMessage.AUTHENTICATION_FAIL);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
@@ -98,6 +103,11 @@ public class ResponseDto {
     public static ResponseEntity<ResponseDto> userNotFound() {
         ResponseDto body = new ResponseDto(ResponseCode.NOT_EXIST_USER_ID, ResponseMessage.NOT_EXIST_USER_ID);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
+
+    public static ResponseEntity<ResponseDto> noPermission() {
+        ResponseDto body = new ResponseDto(ResponseCode.NO_PERMISSION, ResponseMessage.NO_PERMISSION);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
     }
 
     public static ResponseEntity<ResponseDto> authCodeAlreadySent() {

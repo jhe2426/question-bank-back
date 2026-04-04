@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jhe.question_bank.common.dto.request.incorrectquestion.PostIncorrectQuestionGradingRequestDto;
+import com.jhe.question_bank.common.dto.request.incorrectquestions.PostIncorrectQuestionGradingRequestDto;
 import com.jhe.question_bank.common.dto.response.grading.PostExamGradingResponseDto;
-import com.jhe.question_bank.common.dto.response.incorrectquestion.GetIncorrectQuestionListResponseDto;
+import com.jhe.question_bank.common.dto.response.incorrectquestions.GetIncorrectQuestionListResponseDto;
 import com.jhe.question_bank.service.IncorrectQuestionService;
 
 import jakarta.validation.Valid;

@@ -12,11 +12,14 @@ public interface ResponseCode {
     String PAST_EXAM_QUESTION_ID_NOT_FOUND = "NPE";
     String QUESTION_ID_NOT_FOUND = "NQI";
     String INCORRECT_QUESTION_NOT_EXISTS = "NIQ";
+    String QUESTION_GROUP_NOT_EXISTS = "NQG";
 
     String AUTHENTICATION_FAIL = "AF";
     String SIGN_IN_FAIL = "SF";
     String AUTHORIZATION_CODE_EXPIRED = "AE";
     String NOT_EXIST_USER_ID = "NUI";
+
+    String NO_PERMISSION = "NP";
 
     String AUTH_CODE_ALREADY_SENT = "AR";
 

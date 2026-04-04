@@ -13,8 +13,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 
 
+@Slf4j
 @Component
 public class JwtProvider {
     @Value("${jwt.secret}")
@@ -41,7 +43,7 @@ public class JwtProvider {
                 .compact();
 
         } catch (Exception exception) {
-            exception.printStackTrace();
+            log.debug("error = {}", exception);
         }
         
         return accessToken;
@@ -66,7 +68,7 @@ public class JwtProvider {
                 .compact();
 
         } catch (Exception exception) {
-            exception.printStackTrace();
+            log.debug("error = {}", exception);
         }
         
         return refreshToken;
@@ -94,7 +96,7 @@ public class JwtProvider {
             userId = claims.getSubject();
             
         } catch (Exception exception) {
-            exception.printStackTrace();
+            log.debug("error = {}", exception);
         }
 
         return userId;
@@ -122,7 +124,7 @@ public class JwtProvider {
             userId = claims.getSubject();
             
         } catch (Exception exception) {
-            exception.printStackTrace();
+            log.debug("error = {}", exception);
         }
 
         return userId;

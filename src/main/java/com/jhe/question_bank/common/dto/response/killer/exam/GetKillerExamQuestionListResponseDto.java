@@ -14,11 +14,11 @@ import lombok.Getter;
 @Getter
 public class GetKillerExamQuestionListResponseDto extends ResponseDto {
     private List<QuestionVO> questions;
-    private Integer currentKillerExamRound;
+    private Integer sessionId;
 
     private GetKillerExamQuestionListResponseDto(List<QuestionEntity> questionEntities, Integer currentKillerExamRound) {
         this.questions = QuestionVO.getQuestionList(questionEntities);
-        this.currentKillerExamRound = currentKillerExamRound;
+        this.sessionId = currentKillerExamRound;
     }
 
     public static ResponseEntity<GetKillerExamQuestionListResponseDto> success (List<QuestionEntity> questionEntities, Integer currentKillerExamRound) {

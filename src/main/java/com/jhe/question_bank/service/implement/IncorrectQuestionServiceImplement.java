@@ -7,10 +7,10 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.jhe.question_bank.common.dto.request.incorrectquestion.PostIncorrectQuestionGradingRequestDto;
+import com.jhe.question_bank.common.dto.request.incorrectquestions.PostIncorrectQuestionGradingRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
 import com.jhe.question_bank.common.dto.response.grading.PostExamGradingResponseDto;
-import com.jhe.question_bank.common.dto.response.incorrectquestion.GetIncorrectQuestionListResponseDto;
+import com.jhe.question_bank.common.dto.response.incorrectquestions.GetIncorrectQuestionListResponseDto;
 import com.jhe.question_bank.common.entity.GroupQuestionEntity;
 import com.jhe.question_bank.common.entity.QuestionEntity;
 import com.jhe.question_bank.common.entity.UserEntity;

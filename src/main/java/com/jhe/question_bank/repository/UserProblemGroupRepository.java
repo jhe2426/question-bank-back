@@ -7,5 +7,5 @@ import com.jhe.question_bank.common.entity.UserProblemGroupEntity;
 
 @Repository
 public interface UserProblemGroupRepository extends JpaRepository<UserProblemGroupEntity, Integer>{
-    
+    UserProblemGroupEntity findByGroupId(Integer groupId);
 }

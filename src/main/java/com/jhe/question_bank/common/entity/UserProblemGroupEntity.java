@@ -3,7 +3,7 @@ package com.jhe.question_bank.common.entity;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.jhe.question_bank.common.dto.request.incorrectquestion.PostIncorrectQuestionGradingRequestDto;
+import com.jhe.question_bank.common.dto.request.incorrectquestions.PostIncorrectQuestionGradingRequestDto;
 import com.jhe.question_bank.common.dto.request.killer.exam.PostKillerExamGradingRequestDto;
 import com.jhe.question_bank.common.dto.request.mock.exam.PostMockExamGradingRequestDto;
 import com.jhe.question_bank.common.dto.request.past.exam.PostPastExamGradingRequestDto;

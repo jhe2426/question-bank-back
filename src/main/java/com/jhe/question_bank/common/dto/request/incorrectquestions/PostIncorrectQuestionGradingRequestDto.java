@@ -1,4 +1,4 @@
-package com.jhe.question_bank.common.dto.request.incorrectquestion;
+package com.jhe.question_bank.common.dto.request.incorrectquestions;
 
 import java.util.List;
 
