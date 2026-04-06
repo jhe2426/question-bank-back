@@ -108,7 +108,9 @@ public class IncorrectQuestionServiceImplement implements IncorrectQuestionServi
                 GroupQuestionEntity groupQuestionEntity = new GroupQuestionEntity(userAnswer, isCorrect);
                 groupQuestionEntities.add(groupQuestionEntity);
 
-                UserSolvedHistoryEntity userSolvedHistoryEntity = new UserSolvedHistoryEntity(userAnswer, userId, isCorrect, sourceType);
+                
+                String incorrectSourceType = "오답문제";
+                UserSolvedHistoryEntity userSolvedHistoryEntity = new UserSolvedHistoryEntity(userAnswer, userId, isCorrect, incorrectSourceType);
                 userSolvedHistoryEntities.add(userSolvedHistoryEntity);
 
             }

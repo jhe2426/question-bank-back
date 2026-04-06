@@ -13,14 +13,18 @@ import lombok.Getter;
 
 @Getter
 public class GetExamResultResponseDto extends ResponseDto {
+    private String sourceType;
+    private String detailedType;
     private List<ExamResultVO> examResults;
     
-    private GetExamResultResponseDto(List<GetExamResultSet> examResultSets) {
+    private GetExamResultResponseDto(List<GetExamResultSet> examResultSets, String sourceType, String detailedType) {
+        this.sourceType = sourceType;
+        this.detailedType = detailedType;
         this.examResults = ExamResultVO.getList(examResultSets);
     }
 
-    public static ResponseEntity<GetExamResultResponseDto> success(List<GetExamResultSet> examResultSets) {
-        GetExamResultResponseDto body = new GetExamResultResponseDto(examResultSets);
+    public static ResponseEntity<GetExamResultResponseDto> success(List<GetExamResultSet> examResultSets, String sourceType, String detailedType) {
+        GetExamResultResponseDto body = new GetExamResultResponseDto(examResultSets, sourceType, detailedType);
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 }

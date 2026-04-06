@@ -28,6 +28,8 @@ public class ExamResultServiceImplement implements ExamResultService {
 
         if (!filter.equals("all") && !filter.equals("incorrect")) return ResponseDto.validationFail();
 
+        String sourceType;
+        String detailedType;
         List<GetExamResultSet> resultSets = new ArrayList<>();
 
         try {
@@ -36,7 +38,9 @@ public class ExamResultServiceImplement implements ExamResultService {
             if (userProblemGroupEntity == null) return ResponseDto.questionGroupNotExists();
 
             if (!userProblemGroupEntity.getUserId().equals(userId)) return ResponseDto.noPermission();
-
+            
+            sourceType = userProblemGroupEntity.getSourceType();
+            detailedType = userProblemGroupEntity.getDetailedType();
             resultSets = groupQuestionRepository.findExamResultByGroupId(groupId, filter);
             
         } catch (Exception exception) {
@@ -44,7 +48,7 @@ public class ExamResultServiceImplement implements ExamResultService {
             return ResponseDto.databaseError();
         }
         
-        return GetExamResultResponseDto.success(resultSets);
+        return GetExamResultResponseDto.success(resultSets, sourceType, detailedType);
     }
     
 }
