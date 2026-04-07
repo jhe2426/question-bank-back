@@ -93,7 +93,7 @@ public class MockExamServiceImplement implements MockExamService {
 
                 if (isAllSolved) {
                     currentRound++;
-                    userEntity.updateMockExamRound(currentRound);
+                    userEntity.advanceMockExamRound(currentRound);
 
                     candidateQuestionIds = questionRepository.findUnsolvedMockExamQuestionIds(chapterId, difficulty.getDescription(), userId, sourceType, currentRound);
                 } else {
@@ -120,8 +120,9 @@ public class MockExamServiceImplement implements MockExamService {
         return GetMockExamQuestionListResponseDto.success(currentRound, questionEntities, hasExplanation);
     }
 
-    @Transactional
+    
     @Override
+    @Transactional
     public ResponseEntity<? super PostExamGradingResponseDto> postMockExamGrade(String userId, PostMockExamGradingRequestDto dto) {
         Integer groupId = null;
 

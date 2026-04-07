@@ -80,6 +80,11 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    public static ResponseEntity<ResponseDto> passwordIncorrect() {
+        ResponseDto body = new ResponseDto(ResponseCode.PASSWORD_INCOREECT, ResponseMessage.PASSWORD_INCOREECT);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
     public static ResponseEntity<ResponseDto> questionGroupNotExists() {
         ResponseDto body = new ResponseDto(ResponseCode.QUESTION_GROUP_NOT_EXISTS, ResponseMessage.QUESTION_GROUP_NOT_EXISTS);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);

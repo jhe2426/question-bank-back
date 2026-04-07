@@ -13,6 +13,7 @@ public interface ResponseMessage {
     String QUESTION_ID_NOT_FOUND = "Question ID does not exist.";
     String INCORRECT_QUESTION_NOT_EXISTS = "No incorrect question found for the given questionId.";
     String QUESTION_GROUP_NOT_EXISTS = "The question group ID does not exist.";
+    String PASSWORD_INCOREECT = "The password entered is incorrect.";
 
     String AUTHENTICATION_FAIL = "Authentication failed.";
     String SIGN_IN_FAIL = "Sign in Fail.";

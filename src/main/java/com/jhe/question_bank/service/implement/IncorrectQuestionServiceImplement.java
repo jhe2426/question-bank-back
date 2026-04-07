@@ -73,8 +73,8 @@ public class IncorrectQuestionServiceImplement implements IncorrectQuestionServi
         return GetIncorrectQuestionListResponseDto.success(questionEntities);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public ResponseEntity<? super PostExamGradingResponseDto> postIncorrectQuestionGrade(String userId, PostIncorrectQuestionGradingRequestDto dto) {
         Integer groupId = null;
 

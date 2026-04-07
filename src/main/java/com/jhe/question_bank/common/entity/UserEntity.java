@@ -50,11 +50,15 @@ public class UserEntity {
         this.registeredAt = now.format(dateTimeFormatter);
     }
 
-    public void updateKillerExamRound(Integer killerExamRound) {
+    public void advanceKillerExamRound(Integer killerExamRound) {
         this.currentKillerExamRound = killerExamRound;
     }
 
-    public void updateMockExamRound(Integer mockExamRound) {
+    public void advanceMockExamRound(Integer mockExamRound) {
         this.currentMockExamRound = mockExamRound;
+    }
+
+    public void changeUserPassword(String newPassword) {
+        this.password = newPassword;
     }
 }

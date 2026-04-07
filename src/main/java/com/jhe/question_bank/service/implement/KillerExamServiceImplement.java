@@ -40,8 +40,8 @@ public class KillerExamServiceImplement implements KillerExamService {
     private final UserSolvedHistoryRepository userSolvedHistoryRepository;
     private final UserIncorrectQuestionRepository userIncorrectQuestionRepository;
     
-    @Transactional
     @Override
+    @Transactional
     public ResponseEntity<? super GetKillerExamQuestionListResponseDto> getKillerExamQuestionList(String userId) {
         List<QuestionEntity> questionEntities = new ArrayList<>();
         int currentRound;
@@ -64,7 +64,7 @@ public class KillerExamServiceImplement implements KillerExamService {
 
             if (solvedCountInSessionId >= totalKillerExamQuestionCount) {
                 currentRound++;
-                userEntity.updateKillerExamRound(currentRound);
+                userEntity.advanceKillerExamRound(currentRound);
 
                 candidateQuestionIds = questionRepository.findIdsByTypeAndDifficulty(questionType, difficulty);
             } else {
@@ -93,8 +93,8 @@ public class KillerExamServiceImplement implements KillerExamService {
         return GetKillerExamQuestionListResponseDto.success(questionEntities, currentRound);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public ResponseEntity<? super PostExamGradingResponseDto> postPastExamGrade(String userId, PostKillerExamGradingRequestDto dto) {
         Integer groupId = null;
 

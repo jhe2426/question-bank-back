@@ -13,6 +13,7 @@ public interface ResponseCode {
     String QUESTION_ID_NOT_FOUND = "NQI";
     String INCORRECT_QUESTION_NOT_EXISTS = "NIQ";
     String QUESTION_GROUP_NOT_EXISTS = "NQG";
+    String PASSWORD_INCOREECT = "PI";
 
     String AUTHENTICATION_FAIL = "AF";
     String SIGN_IN_FAIL = "SF";
