@@ -49,7 +49,6 @@ public class KillerExamServiceImplement implements KillerExamService {
         try {
             
             UserEntity userEntity = userRepository.findByUserId(userId);
-            if (userEntity == null) return ResponseDto.userNotFound();
 
             currentRound = userEntity.getCurrentKillerExamRound();
             String questionType = "모의고사";

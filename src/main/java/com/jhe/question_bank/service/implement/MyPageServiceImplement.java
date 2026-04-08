@@ -1,5 +1,8 @@
 package com.jhe.question_bank.service.implement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -8,7 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.jhe.question_bank.common.dto.request.mypage.PatchUserPasswordRequestDto;
 import com.jhe.question_bank.common.dto.response.ResponseDto;
+import com.jhe.question_bank.common.dto.response.mypage.GetLearningRecordListResponseDto;
 import com.jhe.question_bank.common.entity.UserEntity;
+import com.jhe.question_bank.common.entity.UserProblemGroupEntity;
+import com.jhe.question_bank.repository.UserProblemGroupRepository;
 import com.jhe.question_bank.repository.UserRepository;
 import com.jhe.question_bank.service.MyPageService;
 
@@ -20,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class MyPageServiceImplement implements MyPageService{
 
     private final UserRepository userRepository;
+    private final UserProblemGroupRepository userProblemGroupRepository;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -46,6 +53,23 @@ public class MyPageServiceImplement implements MyPageService{
         }
 
         return ResponseDto.success(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<? super GetLearningRecordListResponseDto> getLearningRecordList(String userId) {
+        
+        List<UserProblemGroupEntity> userProblemGroupEntities = new ArrayList<>();
+        
+        try {
+            
+            userProblemGroupEntities = userProblemGroupRepository.findByUserIdOrderBySolvedAtAsc(userId);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetLearningRecordListResponseDto.success(userProblemGroupEntities);
     }
     
 }

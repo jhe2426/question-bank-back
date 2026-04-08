@@ -13,7 +13,6 @@ import com.jhe.question_bank.common.dto.response.grading.PostExamGradingResponse
 import com.jhe.question_bank.common.dto.response.incorrectquestions.GetIncorrectQuestionListResponseDto;
 import com.jhe.question_bank.common.entity.GroupQuestionEntity;
 import com.jhe.question_bank.common.entity.QuestionEntity;
-import com.jhe.question_bank.common.entity.UserEntity;
 import com.jhe.question_bank.common.entity.UserIncorrectQuestionEntity;
 import com.jhe.question_bank.common.entity.UserProblemGroupEntity;
 import com.jhe.question_bank.common.entity.UserSolvedHistoryEntity;
@@ -46,9 +45,6 @@ public class IncorrectQuestionServiceImplement implements IncorrectQuestionServi
         List<QuestionEntity> questionEntities = new ArrayList<>();
 
         try {
-            
-            UserEntity userEntity = userRepository.findByUserId(userId);
-            if (userEntity == null) return ResponseDto.userNotFound();
 
             List<Integer> candidateQuestionIds = userIncorrectQuestionRepository.findIdsByUserIdAndSourceType(userId, sourceType);
             if(candidateQuestionIds.isEmpty()) {
