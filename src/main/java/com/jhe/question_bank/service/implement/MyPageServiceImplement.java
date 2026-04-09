@@ -48,6 +48,9 @@ public class MyPageServiceImplement implements MyPageService{
             boolean isMatch = passwordEncoder.matches(currentPassword, userPassword);
             if (!isMatch) return ResponseDto.passwordIncorrect();
 
+            boolean isSame = passwordEncoder.matches(newPassword, userPassword);
+            if (isSame) return ResponseDto.newPasswordSameAsCurrent();
+
             String encodedPassword = passwordEncoder.encode(newPassword);
             userEntity.changeUserPassword(encodedPassword);
 

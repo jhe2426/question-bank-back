@@ -15,6 +15,7 @@ public interface ResponseCode {
     String NOT_EXISTS_QUESTION_GROUP = "NEQG";
     String PASSWORD_INCOREECT = "PI";
     String NOT_PAST_EXAM_GROUP = "NPEG";
+    String NEW_PASSWORD_SAME_AS_CURRENT = "SP";
 
     String AUTHENTICATION_FAIL = "AF";
     String SIGN_IN_FAIL = "SF";

@@ -95,6 +95,11 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    public static ResponseEntity<ResponseDto> newPasswordSameAsCurrent() {
+        ResponseDto body = new ResponseDto(ResponseCode.NEW_PASSWORD_SAME_AS_CURRENT, ResponseMessage.NEW_PASSWORD_SAME_AS_CURRENT);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
     public static ResponseEntity<ResponseDto> authenticationFail() {
         ResponseDto body = new ResponseDto(ResponseCode.AUTHENTICATION_FAIL, ResponseMessage.AUTHENTICATION_FAIL);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
