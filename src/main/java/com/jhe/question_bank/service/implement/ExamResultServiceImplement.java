@@ -35,7 +35,7 @@ public class ExamResultServiceImplement implements ExamResultService {
         try {
 
             UserProblemGroupEntity userProblemGroupEntity = userProblemGroupRepository.findByGroupId(groupId);
-            if (userProblemGroupEntity == null) return ResponseDto.questionGroupNotExists();
+            if (userProblemGroupEntity == null) return ResponseDto.notExistsQuestionGroup();
 
             if (!userProblemGroupEntity.getUserId().equals(userId)) return ResponseDto.noPermission();
             

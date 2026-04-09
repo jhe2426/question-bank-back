@@ -12,8 +12,9 @@ public interface ResponseCode {
     String PAST_EXAM_QUESTION_ID_NOT_FOUND = "NPE";
     String QUESTION_ID_NOT_FOUND = "NQI";
     String INCORRECT_QUESTION_NOT_EXISTS = "NIQ";
-    String QUESTION_GROUP_NOT_EXISTS = "NQG";
+    String NOT_EXISTS_QUESTION_GROUP = "NEQG";
     String PASSWORD_INCOREECT = "PI";
+    String NOT_PAST_EXAM_GROUP = "NPEG";
 
     String AUTHENTICATION_FAIL = "AF";
     String SIGN_IN_FAIL = "SF";

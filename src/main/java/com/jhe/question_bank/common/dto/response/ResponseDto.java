@@ -85,8 +85,13 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
-    public static ResponseEntity<ResponseDto> questionGroupNotExists() {
-        ResponseDto body = new ResponseDto(ResponseCode.QUESTION_GROUP_NOT_EXISTS, ResponseMessage.QUESTION_GROUP_NOT_EXISTS);
+    public static ResponseEntity<ResponseDto> notExistsQuestionGroup() {
+        ResponseDto body = new ResponseDto(ResponseCode.NOT_EXISTS_QUESTION_GROUP, ResponseMessage.NOT_EXISTS_QUESTION_GROUP);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    public static ResponseEntity<ResponseDto> notPastExamGroup() {
+        ResponseDto body = new ResponseDto(ResponseCode.NOT_PAST_EXAM_GROUP, ResponseMessage.NOT_PAST_EXAM_GROUP);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 

@@ -12,8 +12,9 @@ public interface ResponseMessage {
     String PAST_EXAM_QUESTION_ID_NOT_FOUND = "The past exam question ID does not exist.";
     String QUESTION_ID_NOT_FOUND = "Question ID does not exist.";
     String INCORRECT_QUESTION_NOT_EXISTS = "No incorrect question found for the given questionId.";
-    String QUESTION_GROUP_NOT_EXISTS = "The question group ID does not exist.";
+    String NOT_EXISTS_QUESTION_GROUP = "The question group ID does not exist.";
     String PASSWORD_INCOREECT = "The password entered is incorrect.";
+    String NOT_PAST_EXAM_GROUP = "The problem group is not a past exam group.";
 
     String AUTHENTICATION_FAIL = "Authentication failed.";
     String SIGN_IN_FAIL = "Sign in Fail.";
