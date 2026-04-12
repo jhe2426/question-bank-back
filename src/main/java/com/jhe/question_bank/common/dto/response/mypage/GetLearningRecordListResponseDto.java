@@ -13,10 +13,10 @@ import lombok.Getter;
 
 @Getter
 public class GetLearningRecordListResponseDto extends ResponseDto{
-    private List<LearningRecordVO> learningRecordes;
+    private List<LearningRecordVO> learningRecords;
 
     private GetLearningRecordListResponseDto(List<UserProblemGroupEntity> userProblemGroupEntities) {
-        this.learningRecordes = LearningRecordVO.getList(userProblemGroupEntities);
+        this.learningRecords = LearningRecordVO.getList(userProblemGroupEntities);
     }
 
     public static ResponseEntity<GetLearningRecordListResponseDto> success(List<UserProblemGroupEntity> userProblemGroupEntities) {
