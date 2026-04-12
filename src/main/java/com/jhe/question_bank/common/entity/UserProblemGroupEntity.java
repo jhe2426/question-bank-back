@@ -51,6 +51,7 @@ public class UserProblemGroupEntity {
 
         this.userId = userId;
         this.sourceType = sourceType;
+        this.detailedType = sourceType;
         this.totalScore = totalScore;
         this.solvedAt = now.format(dateTimeFormatter);
     }
