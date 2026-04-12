@@ -30,6 +30,7 @@ public class ExamResultServiceImplement implements ExamResultService {
 
         String sourceType;
         String detailedType;
+        Integer totalScore;
         List<GetExamResultSet> resultSets = new ArrayList<>();
 
         try {
@@ -41,6 +42,7 @@ public class ExamResultServiceImplement implements ExamResultService {
             
             sourceType = userProblemGroupEntity.getSourceType();
             detailedType = userProblemGroupEntity.getDetailedType();
+            totalScore = userProblemGroupEntity.getTotalScore();
             resultSets = groupQuestionRepository.findExamResultByGroupId(groupId, filter);
             
         } catch (Exception exception) {
@@ -48,7 +50,7 @@ public class ExamResultServiceImplement implements ExamResultService {
             return ResponseDto.databaseError();
         }
         
-        return GetExamResultResponseDto.success(resultSets, sourceType, detailedType);
+        return GetExamResultResponseDto.success(resultSets, sourceType, detailedType, totalScore);
     }
     
 }

@@ -15,16 +15,18 @@ import lombok.Getter;
 public class GetExamResultResponseDto extends ResponseDto {
     private String sourceType;
     private String detailedType;
+    private Integer totalScore;
     private List<ExamResultVO> examResults;
     
-    private GetExamResultResponseDto(List<GetExamResultSet> examResultSets, String sourceType, String detailedType) {
+    private GetExamResultResponseDto(List<GetExamResultSet> examResultSets, String sourceType, String detailedType, Integer totalScore) {
         this.sourceType = sourceType;
         this.detailedType = detailedType;
+        this.totalScore = totalScore;
         this.examResults = ExamResultVO.getList(examResultSets);
     }
 
-    public static ResponseEntity<GetExamResultResponseDto> success(List<GetExamResultSet> examResultSets, String sourceType, String detailedType) {
-        GetExamResultResponseDto body = new GetExamResultResponseDto(examResultSets, sourceType, detailedType);
+    public static ResponseEntity<GetExamResultResponseDto> success(List<GetExamResultSet> examResultSets, String sourceType, String detailedType, Integer totalScore) {
+        GetExamResultResponseDto body = new GetExamResultResponseDto(examResultSets, sourceType, detailedType, totalScore);
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 }
