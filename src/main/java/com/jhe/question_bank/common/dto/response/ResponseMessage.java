@@ -13,7 +13,7 @@ public interface ResponseMessage {
     String QUESTION_ID_NOT_FOUND = "Question ID does not exist.";
     String INCORRECT_QUESTION_NOT_EXISTS = "No incorrect question found for the given questionId.";
     String NOT_EXISTS_QUESTION_GROUP = "The question group ID does not exist.";
-    String PASSWORD_INCOREECT = "The password entered is incorrect.";
+    String PASSWORD_INCORRECT = "The password entered is incorrect.";
     String NOT_PAST_EXAM_GROUP = "The problem group is not a past exam group.";
     String NEW_PASSWORD_SAME_AS_CURRENT = "New password must be different from current password.";
 

@@ -74,7 +74,7 @@ public enum ErrorCode {
     PASSWORD_INCOREECT(
         HttpStatus.BAD_REQUEST,
         ResponseCode.PASSWORD_INCOREECT, 
-        ResponseMessage.PASSWORD_INCOREECT
+        ResponseMessage.PASSWORD_INCORRECT
     ),
 
     NOT_PAST_EXAM_GROUP(

@@ -3,6 +3,8 @@ package com.jhe.question_bank.service.implement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jhe.question_bank.common.exception.BusinessException;
+import com.jhe.question_bank.common.exception.ErrorCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -26,30 +28,24 @@ public class ExamResultServiceImplement implements ExamResultService {
     @Override
     public ResponseEntity<? super GetExamResultResponseDto> getExamResult(String userId, Integer groupId, String filter) {
 
-        if (!filter.equals("all") && !filter.equals("incorrect")) return ResponseDto.validationFail();
+        if (!filter.equals("all") && !filter.equals("incorrect"))
+            throw new BusinessException(ErrorCode.VALIDATION_FAIL);
 
         String sourceType;
         String detailedType;
         Integer totalScore;
         List<GetExamResultSet> resultSets = new ArrayList<>();
 
-        try {
+        UserProblemGroupEntity userProblemGroupEntity = userProblemGroupRepository.findByGroupId(groupId);
+        if (userProblemGroupEntity == null) throw new BusinessException(ErrorCode.NOT_EXISTS_QUESTION_GROUP);
 
-            UserProblemGroupEntity userProblemGroupEntity = userProblemGroupRepository.findByGroupId(groupId);
-            if (userProblemGroupEntity == null) return ResponseDto.notExistsQuestionGroup();
+        if (!userProblemGroupEntity.getUserId().equals(userId)) throw new BusinessException(ErrorCode.NO_PERMISSION);
 
-            if (!userProblemGroupEntity.getUserId().equals(userId)) return ResponseDto.noPermission();
-            
-            sourceType = userProblemGroupEntity.getSourceType();
-            detailedType = userProblemGroupEntity.getDetailedType();
-            totalScore = userProblemGroupEntity.getTotalScore();
-            resultSets = groupQuestionRepository.findExamResultByGroupId(groupId, filter);
-            
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        
+        sourceType = userProblemGroupEntity.getSourceType();
+        detailedType = userProblemGroupEntity.getDetailedType();
+        totalScore = userProblemGroupEntity.getTotalScore();
+        resultSets = groupQuestionRepository.findExamResultByGroupId(groupId, filter);
+
         return GetExamResultResponseDto.success(resultSets, sourceType, detailedType, totalScore);
     }
     

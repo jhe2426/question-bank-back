@@ -3,6 +3,8 @@ package com.jhe.question_bank.service.implement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jhe.question_bank.common.exception.BusinessException;
+import com.jhe.question_bank.common.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -41,41 +43,23 @@ public class MyPageServiceImplement implements MyPageService{
         String currentPassword = dto.getCurrentPassword();
         String newPassword = dto.getNewPassword();
 
-        try {
+        UserEntity userEntity = userRepository.findByUserId(userId);
+        String userPassword = userEntity.getPassword();
+        boolean isMatch = passwordEncoder.matches(currentPassword, userPassword);
+        if (!isMatch) throw new BusinessException(ErrorCode.PASSWORD_INCOREECT);
 
-            UserEntity userEntity = userRepository.findByUserId(userId);
-            String userPassword = userEntity.getPassword();
-            boolean isMatch = passwordEncoder.matches(currentPassword, userPassword);
-            if (!isMatch) return ResponseDto.passwordIncorrect();
+        boolean isSame = passwordEncoder.matches(newPassword, userPassword);
+        if (isSame) throw new BusinessException(ErrorCode.NEW_PASSWORD_SAME_AS_CURRENT);
 
-            boolean isSame = passwordEncoder.matches(newPassword, userPassword);
-            if (isSame) return ResponseDto.newPasswordSameAsCurrent();
-
-            String encodedPassword = passwordEncoder.encode(newPassword);
-            userEntity.changeUserPassword(encodedPassword);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        userEntity.changeUserPassword(encodedPassword);
 
         return ResponseDto.success(HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<? super GetLearningRecordListResponseDto> getLearningRecordList(String userId) {
-        
-        List<UserProblemGroupEntity> userProblemGroupEntities = new ArrayList<>();
-        
-        try {
-            
-            userProblemGroupEntities = userProblemGroupRepository.findByUserIdOrderBySolvedAtAsc(userId);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-
+        List<UserProblemGroupEntity> userProblemGroupEntities = userProblemGroupRepository.findByUserIdOrderBySolvedAtAsc(userId);
         return GetLearningRecordListResponseDto.success(userProblemGroupEntities);
     }
 
@@ -84,19 +68,12 @@ public class MyPageServiceImplement implements MyPageService{
 
         List<GetUnitGradingResultSet> resultSets = new ArrayList<>();
 
-        try {
-            
-            UserProblemGroupEntity userProblemGroupEntity = userProblemGroupRepository.findByGroupId(groupId);
-            if (userProblemGroupEntity == null) return ResponseDto.notExistsQuestionGroup();
-            if (!userProblemGroupEntity.getUserId().equals(userId)) return ResponseDto.noPermission();
-            if (!userProblemGroupEntity.getSourceType().equals("기출문제")) return ResponseDto.notPastExamGroup();
+        UserProblemGroupEntity userProblemGroupEntity = userProblemGroupRepository.findByGroupId(groupId);
+        if (userProblemGroupEntity == null) throw new BusinessException(ErrorCode.NOT_EXISTS_QUESTION_GROUP);
+        if (!userProblemGroupEntity.getUserId().equals(userId)) throw new BusinessException(ErrorCode.NO_PERMISSION);
+        if (!userProblemGroupEntity.getSourceType().equals("기출문제")) throw new BusinessException(ErrorCode.NOT_PAST_EXAM_GROUP);
 
-            resultSets = groupQuestionRepository.findUnitGradingResultByGroupId(groupId);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
+        resultSets = groupQuestionRepository.findUnitGradingResultByGroupId(groupId);
 
         return GetUnitGradingResultResponseDto.success(resultSets);
     }

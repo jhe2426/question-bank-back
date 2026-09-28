@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.jhe.question_bank.common.exception.BusinessException;
+import com.jhe.question_bank.common.exception.ErrorCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -55,19 +57,12 @@ public class MockExamServiceImplement implements MockExamService {
         List<UnitEntity> unitEntities = new ArrayList<>();
         Map<Integer, List<ChapterEntity>> chpaterMap = new HashMap<>();        
 
-        try {
-            
-            unitEntities = unitRepository.findAllByOrderByUnitIdAsc();
+        unitEntities = unitRepository.findAllByOrderByUnitIdAsc();
 
-            List<ChapterEntity> chapterEntities = chapterRepository.findAllByOrderByUnitIdAscChapterNumberAsc();
-            for (ChapterEntity chapterEntity: chapterEntities) {
-                chpaterMap.computeIfAbsent(chapterEntity.getUnitId(), k -> new ArrayList<>())
-                    .add(chapterEntity);
-            }
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
+        List<ChapterEntity> chapterEntities = chapterRepository.findAllByOrderByUnitIdAscChapterNumberAsc();
+        for (ChapterEntity chapterEntity: chapterEntities) {
+            chpaterMap.computeIfAbsent(chapterEntity.getUnitId(), k -> new ArrayList<>())
+                .add(chapterEntity);
         }
 
         return GetUnitsAndChaptersResponseDto.success(unitEntities, chpaterMap);
@@ -78,44 +73,37 @@ public class MockExamServiceImplement implements MockExamService {
         List<QuestionEntity> questionEntities = new ArrayList<>();
         int currentRound;
 
-        try {
+        UserEntity userEntity = userRepository.findByUserId(userId);
+        if (userEntity == null) throw new BusinessException(ErrorCode.NOT_EXIST_USER_ID);
 
-            UserEntity userEntity = userRepository.findByUserId(userId);
-            if (userEntity == null) return ResponseDto.userNotFound();
+        currentRound = userEntity.getCurrentMockExamRound();
+        String sourceType = "모의고사";
 
-            currentRound = userEntity.getCurrentMockExamRound();
-            String sourceType = "모의고사";
+        List<Integer> candidateQuestionIds = questionRepository.findUnsolvedMockExamQuestionIds(chapterId, difficulty.getDescription(), userId, sourceType, currentRound);
+        if (candidateQuestionIds == null || candidateQuestionIds.isEmpty()) {
 
-            List<Integer> candidateQuestionIds = questionRepository.findUnsolvedMockExamQuestionIds(chapterId, difficulty.getDescription(), userId, sourceType, currentRound);
-            if (candidateQuestionIds == null || candidateQuestionIds.isEmpty()) {
+            boolean isAllSolved = questionRepository.isAllMockExamSolved(userId, sourceType, currentRound);
 
-                boolean isAllSolved = questionRepository.isAllMockExamSolved(userId, sourceType, currentRound);
+            if (isAllSolved) {
+                currentRound++;
+                userEntity.advanceMockExamRound(currentRound);
 
-                if (isAllSolved) {
-                    currentRound++;
-                    userEntity.advanceMockExamRound(currentRound);
-
-                    candidateQuestionIds = questionRepository.findUnsolvedMockExamQuestionIds(chapterId, difficulty.getDescription(), userId, sourceType, currentRound);
-                } else {
-                    return GetMockExamQuestionListResponseDto.success(currentRound, questionEntities, hasExplanation);
-                }
-
+                candidateQuestionIds = questionRepository.findUnsolvedMockExamQuestionIds(chapterId, difficulty.getDescription(), userId, sourceType, currentRound);
+            } else {
+                return GetMockExamQuestionListResponseDto.success(currentRound, questionEntities, hasExplanation);
             }
 
-            Collections.shuffle(candidateQuestionIds);
-            List<Integer> selectedQuestionIds = new ArrayList<>();
-            int limit = Math.min(candidateQuestionIds.size(), 10);
-
-            for (int index = 0; index < limit; index++) {
-                selectedQuestionIds.add(candidateQuestionIds.get(index));
-            }
-
-            questionEntities = questionRepository.findAllByQuestionIdIn(selectedQuestionIds);
-            
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
         }
+
+        Collections.shuffle(candidateQuestionIds);
+        List<Integer> selectedQuestionIds = new ArrayList<>();
+        int limit = Math.min(candidateQuestionIds.size(), 10);
+
+        for (int index = 0; index < limit; index++) {
+            selectedQuestionIds.add(candidateQuestionIds.get(index));
+        }
+
+        questionEntities = questionRepository.findAllByQuestionIdIn(selectedQuestionIds);
 
         return GetMockExamQuestionListResponseDto.success(currentRound, questionEntities, hasExplanation);
     }
@@ -126,63 +114,56 @@ public class MockExamServiceImplement implements MockExamService {
     public ResponseEntity<? super PostExamGradingResponseDto> postMockExamGrade(String userId, PostMockExamGradingRequestDto dto) {
         Integer groupId = null;
 
-        try {
-            
-            List<UserAnswerVO> userAnswerList = dto.getUserAnswers();
-            int sessionId = dto.getSessionId();
-            String sourceType = "모의고사";
+        List<UserAnswerVO> userAnswerList = dto.getUserAnswers();
+        int sessionId = dto.getSessionId();
+        String sourceType = "모의고사";
 
-            int correctCount = 0;
+        int correctCount = 0;
 
-            List<GroupQuestionEntity> groupQuestionEntities = new ArrayList<>();
-            List<UserIncorrectQuestionEntity> incorrectQuestionEntities = new ArrayList<>();
-            List<UserSolvedHistoryEntity> userSolvedHistoryEntities = new ArrayList<>();
+        List<GroupQuestionEntity> groupQuestionEntities = new ArrayList<>();
+        List<UserIncorrectQuestionEntity> incorrectQuestionEntities = new ArrayList<>();
+        List<UserSolvedHistoryEntity> userSolvedHistoryEntities = new ArrayList<>();
 
-            for (UserAnswerVO userAnswer: userAnswerList) {
-                int questionId = userAnswer.getQuestionId();
-                int inputAnswer = userAnswer.getAnswer();
+        for (UserAnswerVO userAnswer: userAnswerList) {
+            int questionId = userAnswer.getQuestionId();
+            int inputAnswer = userAnswer.getAnswer();
 
-                QuestionEntity questionEntity = questionRepository.findByQuestionId(questionId);
-                if (questionEntity == null) return ResponseDto.questionIdNotFound();
+            QuestionEntity questionEntity = questionRepository.findByQuestionId(questionId);
+            if (questionEntity == null) throw new BusinessException(ErrorCode.QUESTION_ID_NOT_FOUND);
 
-                boolean isCorrect = questionEntity.getAnswer().equals(inputAnswer);
-                if (isCorrect) correctCount++;
+            boolean isCorrect = questionEntity.getAnswer().equals(inputAnswer);
+            if (isCorrect) correctCount++;
 
-                GroupQuestionEntity groupQuestionEntity = new GroupQuestionEntity(userAnswer, isCorrect);
-                groupQuestionEntities.add(groupQuestionEntity);
+            GroupQuestionEntity groupQuestionEntity = new GroupQuestionEntity(userAnswer, isCorrect);
+            groupQuestionEntities.add(groupQuestionEntity);
 
-                UserSolvedHistoryEntity userSolvedHistoryEntity = new UserSolvedHistoryEntity(userAnswer, userId, sessionId, isCorrect, sourceType);
-                userSolvedHistoryEntities.add(userSolvedHistoryEntity);
+            UserSolvedHistoryEntity userSolvedHistoryEntity = new UserSolvedHistoryEntity(userAnswer, userId, sessionId, isCorrect, sourceType);
+            userSolvedHistoryEntities.add(userSolvedHistoryEntity);
 
-                if (!isCorrect) {
-                    UserIncorrectQuestionEntity userIncorrectQuestionEntity = userIncorrectQuestionRepository.findByUserIdAndQuestionIdAndSourceType(userId, questionId, sourceType);
-                    if (userIncorrectQuestionEntity != null) continue;
+            if (!isCorrect) {
+                UserIncorrectQuestionEntity userIncorrectQuestionEntity = userIncorrectQuestionRepository.findByUserIdAndQuestionIdAndSourceType(userId, questionId, sourceType);
+                if (userIncorrectQuestionEntity != null) continue;
 
-                    userIncorrectQuestionEntity = new UserIncorrectQuestionEntity(userId, questionId, sourceType);
-                    incorrectQuestionEntities.add(userIncorrectQuestionEntity);
-                }
+                userIncorrectQuestionEntity = new UserIncorrectQuestionEntity(userId, questionId, sourceType);
+                incorrectQuestionEntities.add(userIncorrectQuestionEntity);
             }
-
-            int totalScore = 0;
-            int totalQuestionCount = userAnswerList.size();
-            if (totalQuestionCount > 0) totalScore = (int) Math.round((double) correctCount / totalQuestionCount * 100 );
-            
-            UserProblemGroupEntity userProblemGroupEntity = new UserProblemGroupEntity(dto, sourceType, userId, totalScore);
-            userProblemGroupEntity = userProblemGroupRepository.save(userProblemGroupEntity);
-            groupId = userProblemGroupEntity.getGroupId();
-
-            for (GroupQuestionEntity groupQuestionEntity : groupQuestionEntities) {
-                groupQuestionEntity.assignGroupId(groupId);
-            }
-
-            groupQuestionRepository.saveAll(groupQuestionEntities);
-            userIncorrectQuestionRepository.saveAll(incorrectQuestionEntities);
-            userSolvedHistoryRepository.saveAll(userSolvedHistoryEntities);
-            
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
         }
+
+        int totalScore = 0;
+        int totalQuestionCount = userAnswerList.size();
+        if (totalQuestionCount > 0) totalScore = (int) Math.round((double) correctCount / totalQuestionCount * 100 );
+
+        UserProblemGroupEntity userProblemGroupEntity = new UserProblemGroupEntity(dto, sourceType, userId, totalScore);
+        userProblemGroupEntity = userProblemGroupRepository.save(userProblemGroupEntity);
+        groupId = userProblemGroupEntity.getGroupId();
+
+        for (GroupQuestionEntity groupQuestionEntity : groupQuestionEntities) {
+            groupQuestionEntity.assignGroupId(groupId);
+        }
+
+        groupQuestionRepository.saveAll(groupQuestionEntities);
+        userIncorrectQuestionRepository.saveAll(incorrectQuestionEntities);
+        userSolvedHistoryRepository.saveAll(userSolvedHistoryEntities);
 
         return PostExamGradingResponseDto.success(groupId);
     }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.jhe.question_bank.common.exception.BusinessException;
+import com.jhe.question_bank.common.exception.ErrorCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -39,121 +41,108 @@ public class KillerExamServiceImplement implements KillerExamService {
     private final QuestionRepository questionRepository;
     private final UserSolvedHistoryRepository userSolvedHistoryRepository;
     private final UserIncorrectQuestionRepository userIncorrectQuestionRepository;
-    
-    @Override
+
     @Transactional
+    @Override
     public ResponseEntity<? super GetKillerExamQuestionListResponseDto> getKillerExamQuestionList(String userId) {
         List<QuestionEntity> questionEntities = new ArrayList<>();
         int currentRound;
 
-        try {
-            
-            UserEntity userEntity = userRepository.findByUserId(userId);
+        UserEntity userEntity = userRepository.findByUserId(userId);
 
-            currentRound = userEntity.getCurrentKillerExamRound();
-            String questionType = "모의고사";
-            String difficulty = "상";
+        currentRound = userEntity.getCurrentKillerExamRound();
+        String questionType = "모의고사";
+        String difficulty = "상";
 
-            int totalKillerExamQuestionCount = questionRepository.countByQuestionTypeAndDifficulty(questionType, difficulty);
+        int totalKillerExamQuestionCount = questionRepository.countByQuestionTypeAndDifficulty(questionType, difficulty);
 
-            String sourceType = "킬러문제";
-            int solvedCountInSessionId = userSolvedHistoryRepository.countByUserIdAndSessionIdAndSourceType(userId, currentRound, sourceType);
-            
-            List<Integer> candidateQuestionIds;
+        String sourceType = "킬러문제";
+        int solvedCountInSessionId = userSolvedHistoryRepository.countByUserIdAndSessionIdAndSourceType(userId, currentRound, sourceType);
 
-            if (solvedCountInSessionId >= totalKillerExamQuestionCount) {
-                currentRound++;
-                userEntity.advanceKillerExamRound(currentRound);
+        List<Integer> candidateQuestionIds;
 
-                candidateQuestionIds = questionRepository.findIdsByTypeAndDifficulty(questionType, difficulty);
-            } else {
-                List<Integer> allIds = questionRepository.findIdsByTypeAndDifficulty(questionType, difficulty);
-                List<Integer> solvedQuestionIds = userSolvedHistoryRepository.findSolvedQuestionIdsBySessionId(userId, currentRound, sourceType);
+        if (solvedCountInSessionId >= totalKillerExamQuestionCount) {
+            currentRound++;
+            userEntity.advanceKillerExamRound(currentRound);
 
-                allIds.removeAll(solvedQuestionIds);
-                candidateQuestionIds = allIds;
-            }
+            candidateQuestionIds = questionRepository.findIdsByTypeAndDifficulty(questionType, difficulty);
+        } else {
+            List<Integer> allIds = questionRepository.findIdsByTypeAndDifficulty(questionType, difficulty);
+            List<Integer> solvedQuestionIds = userSolvedHistoryRepository.findSolvedQuestionIdsBySessionId(userId, currentRound, sourceType);
 
-            Collections.shuffle(candidateQuestionIds);
-            List<Integer> selectedQuestionIds = new ArrayList<>();
-            int limit = Math.min(candidateQuestionIds.size(), 10);
-
-            for (int index = 0; index < limit; index++) {
-                selectedQuestionIds.add(candidateQuestionIds.get(index));
-            }
-
-            questionEntities = questionRepository.findAllByQuestionIdIn(selectedQuestionIds);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
+            allIds.removeAll(solvedQuestionIds);
+            candidateQuestionIds = allIds;
         }
+
+        Collections.shuffle(candidateQuestionIds);
+        List<Integer> selectedQuestionIds = new ArrayList<>();
+        int limit = Math.min(candidateQuestionIds.size(), 10);
+
+        for (int index = 0; index < limit; index++) {
+            selectedQuestionIds.add(candidateQuestionIds.get(index));
+        }
+
+        questionEntities = questionRepository.findAllByQuestionIdIn(selectedQuestionIds);
 
         return GetKillerExamQuestionListResponseDto.success(questionEntities, currentRound);
     }
 
-    @Override
     @Transactional
+    @Override
     public ResponseEntity<? super PostExamGradingResponseDto> postPastExamGrade(String userId, PostKillerExamGradingRequestDto dto) {
         Integer groupId = null;
 
-        try {
+        List<UserAnswerVO> userAnswerList = dto.getUserAnswers();
+        int sessionId = dto.getSessionId();
+        String sourceType = "킬러문제";
 
-            List<UserAnswerVO> userAnswerList = dto.getUserAnswers();
-            int sessionId = dto.getSessionId();
-            String sourceType = "킬러문제";
-            
-            int correctCount = 0;
+        int correctCount = 0;
 
-            List<GroupQuestionEntity> groupQuestionEntities = new ArrayList<>();
-            List<UserIncorrectQuestionEntity> incorrectQuestionEntities = new ArrayList<>();
-            List<UserSolvedHistoryEntity> userSolvedHistoryEntities = new ArrayList<>();
+        List<GroupQuestionEntity> groupQuestionEntities = new ArrayList<>();
+        List<UserIncorrectQuestionEntity> incorrectQuestionEntities = new ArrayList<>();
+        List<UserSolvedHistoryEntity> userSolvedHistoryEntities = new ArrayList<>();
 
-            for (UserAnswerVO userAnswer: userAnswerList) {
-                int questionId = userAnswer.getQuestionId();
-                int inputAnswer = userAnswer.getAnswer();
+        for (UserAnswerVO userAnswer: userAnswerList) {
+            int questionId = userAnswer.getQuestionId();
+            int inputAnswer = userAnswer.getAnswer();
 
-                QuestionEntity questionEntity = questionRepository.findByQuestionId(questionId);
-                if (questionEntity == null) return ResponseDto.questionIdNotFound();
+            QuestionEntity questionEntity = questionRepository.findByQuestionId(questionId);
+            if (questionEntity == null) throw new BusinessException(ErrorCode.QUESTION_ID_NOT_FOUND);
 
-                boolean isCorrect = questionEntity.getAnswer().equals(inputAnswer);
-                if (isCorrect) correctCount++;
+            boolean isCorrect = questionEntity.getAnswer().equals(inputAnswer);
+            if (isCorrect) correctCount++;
 
-                GroupQuestionEntity groupQuestionEntity = new GroupQuestionEntity(userAnswer, isCorrect);
-                groupQuestionEntities.add(groupQuestionEntity);
+            GroupQuestionEntity groupQuestionEntity = new GroupQuestionEntity(userAnswer, isCorrect);
+            groupQuestionEntities.add(groupQuestionEntity);
 
-                UserSolvedHistoryEntity userSolvedHistoryEntity = new UserSolvedHistoryEntity(userAnswer, userId, sessionId, isCorrect, sourceType);
-                userSolvedHistoryEntities.add(userSolvedHistoryEntity);
+            UserSolvedHistoryEntity userSolvedHistoryEntity = new UserSolvedHistoryEntity(userAnswer, userId, sessionId, isCorrect, sourceType);
+            userSolvedHistoryEntities.add(userSolvedHistoryEntity);
 
-                if (!isCorrect) {
-                    UserIncorrectQuestionEntity userIncorrectQuestionEntity = userIncorrectQuestionRepository.findByUserIdAndQuestionIdAndSourceType(userId, questionId, sourceType);
-                    if (userIncorrectQuestionEntity != null) continue;
+            if (!isCorrect) {
+                UserIncorrectQuestionEntity userIncorrectQuestionEntity = userIncorrectQuestionRepository.findByUserIdAndQuestionIdAndSourceType(userId, questionId, sourceType);
+                if (userIncorrectQuestionEntity != null) continue;
 
-                    userIncorrectQuestionEntity = new UserIncorrectQuestionEntity(userId, questionId, sourceType);
-                    incorrectQuestionEntities.add(userIncorrectQuestionEntity);
-                }
+                userIncorrectQuestionEntity = new UserIncorrectQuestionEntity(userId, questionId, sourceType);
+                incorrectQuestionEntities.add(userIncorrectQuestionEntity);
             }
-
-            int totalScore = 0;
-            int totalQuestionCount = userAnswerList.size();
-            if (totalQuestionCount > 0) totalScore = (int) Math.round((double) correctCount / totalQuestionCount * 100 );
-
-            UserProblemGroupEntity userProblemGroupEntity = new UserProblemGroupEntity(dto, sourceType, userId, totalScore);
-            userProblemGroupEntity = userProblemGroupRepository.save(userProblemGroupEntity);
-            groupId = userProblemGroupEntity.getGroupId();
-
-            for (GroupQuestionEntity groupQuestionEntity : groupQuestionEntities) {
-                groupQuestionEntity.assignGroupId(groupId);
-            }
-
-            groupQuestionRepository.saveAll(groupQuestionEntities);
-            userIncorrectQuestionRepository.saveAll(incorrectQuestionEntities);
-            userSolvedHistoryRepository.saveAll(userSolvedHistoryEntities);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
         }
+
+        int totalScore = 0;
+        int totalQuestionCount = userAnswerList.size();
+        if (totalQuestionCount > 0) totalScore = (int) Math.round((double) correctCount / totalQuestionCount * 100 );
+
+        UserProblemGroupEntity userProblemGroupEntity = new UserProblemGroupEntity(dto, sourceType, userId, totalScore);
+        userProblemGroupEntity = userProblemGroupRepository.save(userProblemGroupEntity);
+        groupId = userProblemGroupEntity.getGroupId();
+
+        for (GroupQuestionEntity groupQuestionEntity : groupQuestionEntities) {
+            groupQuestionEntity.assignGroupId(groupId);
+        }
+
+        groupQuestionRepository.saveAll(groupQuestionEntities);
+        userIncorrectQuestionRepository.saveAll(incorrectQuestionEntities);
+        userSolvedHistoryRepository.saveAll(userSolvedHistoryEntities);
+
 
         return PostExamGradingResponseDto.success(groupId);
     }

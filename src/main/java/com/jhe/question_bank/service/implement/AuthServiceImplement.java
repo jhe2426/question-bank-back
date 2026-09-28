@@ -2,7 +2,6 @@ package com.jhe.question_bank.service.implement;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +25,8 @@ import com.jhe.question_bank.common.dto.response.auth.SignInResponseDto;
 import com.jhe.question_bank.common.entity.ApprovalCodeEntity;
 import com.jhe.question_bank.common.entity.UniversityEntity;
 import com.jhe.question_bank.common.entity.UserEntity;
+import com.jhe.question_bank.common.exception.BusinessException;
+import com.jhe.question_bank.common.exception.ErrorCode;
 import com.jhe.question_bank.common.util.AuthCodeCreator;
 import com.jhe.question_bank.provider.JwtProvider;
 import com.jhe.question_bank.provider.SmsProvider;
@@ -55,7 +56,6 @@ public class AuthServiceImplement implements AuthService {
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    @Transactional
     @Override
     public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
 
@@ -65,42 +65,28 @@ public class AuthServiceImplement implements AuthService {
 
         String userId = dto.getUserId();
 
-        try {
+        UserEntity userEntity = userRepository.findByUserId(userId);
+        if (userEntity == null) throw new BusinessException(ErrorCode.SIGN_IN_FAIL);
 
-            UserEntity userEntity = userRepository.findByUserId(userId);
-            if (userEntity == null) return ResponseDto.signInFail();
+        String userPassword = dto.getUserPassword();
+        String encodedPassword = userEntity.getPassword();
+        boolean isMatch = passwordEncoder.matches(userPassword, encodedPassword);
+        if (!isMatch) throw new BusinessException(ErrorCode.SIGN_IN_FAIL);
 
-            String userPassword = dto.getUserPassword();
-            String encodedPassword = userEntity.getPassword();
-            boolean isMatch = passwordEncoder.matches(userPassword, encodedPassword);
-            if (!isMatch) return ResponseDto.signInFail();
+        ApprovalCodeEntity approvalCodeEntity = approvalCodeRepository.findByUserId(userId);
+        if (approvalCodeEntity == null) throw new BusinessException(ErrorCode.SIGN_IN_FAIL);
 
-            ApprovalCodeEntity approvalCodeEntity = approvalCodeRepository.findByUserId(userId);
-            if (approvalCodeEntity == null) return ResponseDto.signInFail();
-
-            String expireDate = approvalCodeEntity.getExpireDate();
-            LocalDate expiresAt = LocalDate.parse(expireDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            LocalDate now = LocalDate.now();
-            boolean isNotExpired = now.isBefore(expiresAt) || now.isEqual(expiresAt);
-            if(!isNotExpired) return ResponseDto.authorizationCodeExpired();
-            
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
+        String expireDate = approvalCodeEntity.getExpireDate();
+        LocalDate expiresAt = LocalDate.parse(expireDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate now = LocalDate.now();
+        boolean isNotExpired = now.isBefore(expiresAt) || now.isEqual(expiresAt);
+        if(!isNotExpired) throw new BusinessException(ErrorCode.AUTHORIZATION_CODE_EXPIRED);
 
         accessToken = jwtProvider.createAccessToken(userId);
         refreshToken = jwtProvider.createRefreshToken(userId);
         csrfToken = UUID.randomUUID().toString();
 
-        try {
-
-            refreshTokenStore.save(userId, refreshToken);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.redisServerError();
-        }
+        refreshTokenStore.save(userId, refreshToken);
 
         return SignInResponseDto.success(accessToken, refreshToken, csrfToken);
     }
@@ -109,27 +95,13 @@ public class AuthServiceImplement implements AuthService {
     public ResponseEntity<? super AccessTokenRefreshResponseDto> refreshAccessToken(String refreshToken) {
         
         String userId = jwtProvider.validateRefreshToken(refreshToken);
-        if (userId == null) return ResponseDto.authenticationFail();
+        if (userId == null) throw new BusinessException(ErrorCode.AUTHENTICATION_FAIL);
 
-        try {
+        boolean isMatched = refreshTokenStore.matches(userId, refreshToken);
+        if (!isMatched) throw new BusinessException(ErrorCode.AUTHENTICATION_FAIL);
 
-            boolean isMatched = refreshTokenStore.matches(userId, refreshToken);
-            if (!isMatched) return ResponseDto.authenticationFail();
-            
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.redisServerError();
-        }
-
-        try {
-
-            boolean existUser = userRepository.existsById(userId);
-            if (!existUser) return ResponseDto.authenticationFail();
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
+        boolean existUser = userRepository.existsById(userId);
+        if (!existUser) throw new BusinessException(ErrorCode.AUTHENTICATION_FAIL);
 
         String accessToken = jwtProvider.createAccessToken(userId);
 
@@ -139,17 +111,8 @@ public class AuthServiceImplement implements AuthService {
     @Override
     public ResponseEntity<? super GetUniversitiesResponseDto> getUniversities() {
 
-        List<UniversityEntity> universityEntities = new ArrayList<>();
+        List<UniversityEntity>  universityEntities = universityRepository.findAllByOrderByUniversityIdAsc();
 
-        try {
-            
-            universityEntities = universityRepository.findAllByOrderByUniversityIdAsc();
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        
         return GetUniversitiesResponseDto.success(universityEntities);
     }
 
@@ -158,13 +121,8 @@ public class AuthServiceImplement implements AuthService {
 
         String userId = dto.getUserId();
 
-        try {    
-            boolean isExistUserId = userRepository.existsByUserId(userId);
-            if (isExistUserId) return ResponseDto.existsUserId();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
+        boolean isExistUserId = userRepository.existsByUserId(userId);
+        if (isExistUserId) throw new BusinessException(ErrorCode.EXISTS_USER_ID);
 
         return ResponseDto.success(HttpStatus.OK);
     }
@@ -175,40 +133,19 @@ public class AuthServiceImplement implements AuthService {
         
         String phoneNumber = dto.getPhoneNumber();
 
-        try {
-            
-            boolean isExistedPhoneNumber = userRepository.existsByPhoneNumber(phoneNumber);
-            if (isExistedPhoneNumber) return ResponseDto.existsUserPhoneNumber();
+        boolean isExistedPhoneNumber = userRepository.existsByPhoneNumber(phoneNumber);
+        if (isExistedPhoneNumber) throw new BusinessException(ErrorCode.EXISTS_USER_PHONE_NUMBER);
 
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-
-        try {
-
-            boolean isAuthCodeIssued = phoneNumberAuthStore.authCodeExists(phoneNumber);
-            if (isAuthCodeIssued) return ResponseDto.authCodeAlreadySent();
-            
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.redisServerError();
-        }
+        boolean isAuthCodeIssued = phoneNumberAuthStore.authCodeExists(phoneNumber);
+        if (isAuthCodeIssued) throw new BusinessException(ErrorCode.AUTH_CODE_ALREADY_SENT);
 
         String authCode = AuthCodeCreator.generatePhoneNumberAuthCode();
 
         boolean isSendSuccessful = smsProvider.sendPhoneNumberAuthCodeMessage(phoneNumber, authCode);
-        if (!isSendSuccessful) return ResponseDto.smsSendFail();
+        if (!isSendSuccessful) throw new BusinessException(ErrorCode.SMS_SEND_FAILED);
 
-        try {
+        phoneNumberAuthStore.saveAuthCode(phoneNumber, authCode);
 
-            phoneNumberAuthStore.saveAuthCode(phoneNumber, authCode);
-            
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.redisServerError();
-        }
-        
         return ResponseDto.success(HttpStatus.CREATED);
     }
 
@@ -217,43 +154,30 @@ public class AuthServiceImplement implements AuthService {
 
         String phoneNumber = dto.getPhoneNumber();
         String authCode = dto.getAuthCode();
-        
-        try {
-            boolean isAuthCodeValid = phoneNumberAuthStore.isAuthCodeValid(phoneNumber, authCode);
-            if (!isAuthCodeValid) return ResponseDto.phoneNumberAuthFail();
 
-            phoneNumberAuthStore.verifySave(phoneNumber);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.redisServerError();
-        }
+        boolean isAuthCodeValid = phoneNumberAuthStore.isAuthCodeValid(phoneNumber, authCode);
+        if (!isAuthCodeValid) throw new BusinessException(ErrorCode.PHONE_NUMBER_AUTH_FAILED);
+
+        phoneNumberAuthStore.verifySave(phoneNumber);
 
         return ResponseDto.success(HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<ResponseDto> approvalCode(ApprovalCodeRequestDto dto) {
+
         String phoneNumber = dto.getPhoneNumber();
 
         String approvalCode = AuthCodeCreator.generateApprovalCode();
 
         boolean isSendSuccessful = smsProvider.sendApprovalCodeMessage(phoneNumber, approvalCode);
-        if (!isSendSuccessful) return ResponseDto.smsSendFail();
+        if (!isSendSuccessful) throw new BusinessException(ErrorCode.SMS_SEND_FAILED);
 
-        try {
-            
-            ApprovalCodeEntity approvalCodeEntity = new ApprovalCodeEntity(approvalCode);
-            approvalCodeRepository.save(approvalCodeEntity);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
+        ApprovalCodeEntity approvalCodeEntity = new ApprovalCodeEntity(approvalCode);
+        approvalCodeRepository.save(approvalCodeEntity);
 
         return ResponseDto.success(HttpStatus.CREATED);
     }
-
-    
 
     @Override
     public ResponseEntity<ResponseDto> approvalCodeVerify(ApprovalCodeVerifyRequestDto dto) {
@@ -261,34 +185,27 @@ public class AuthServiceImplement implements AuthService {
         String userId = dto.getUserId();
         String approvalCode = dto.getApprovalCode();
 
-        try {
-            
-            boolean isExistedUserId = userRepository.existsByUserId(userId);
-            if (isExistedUserId) return ResponseDto.existsUserId();
+        boolean isExistedUserId = userRepository.existsByUserId(userId);
+        if (isExistedUserId) throw  new BusinessException(ErrorCode.EXISTS_USER_ID);
 
-            ApprovalCodeEntity approvalCodeEntity = approvalCodeRepository.findByApprovalCode(approvalCode);
-            if (approvalCodeEntity == null) return ResponseDto.approvalCodeAuthFail();
-            
-            String approvalCodeExpireDate = approvalCodeEntity.getExpireDate();
-            boolean isExistedApprovalCodeExpireDate = approvalCodeExpireDate != null;
-            if (isExistedApprovalCodeExpireDate) return ResponseDto.usedApprovalCode();
+        ApprovalCodeEntity approvalCodeEntity = approvalCodeRepository.findByApprovalCode(approvalCode);
+        if (approvalCodeEntity == null) throw new BusinessException(ErrorCode.APPROVAL_CODE_AUTH_FAILED);
 
-            ApprovalCodeEntity occupyingUserIdApprovalCodeEntity = approvalCodeRepository.findByUserId(userId);
-            if (occupyingUserIdApprovalCodeEntity != null) {
-                String occupyingApprovalCode = occupyingUserIdApprovalCodeEntity.getApprovalCode();
-                if (!occupyingApprovalCode.equals(approvalCode)) {
-                    occupyingUserIdApprovalCodeEntity.updateUserId(null);
-                    approvalCodeRepository.saveAndFlush(occupyingUserIdApprovalCodeEntity);
-                }
+        String approvalCodeExpireDate = approvalCodeEntity.getExpireDate();
+        boolean isExistedApprovalCodeExpireDate = approvalCodeExpireDate != null;
+        if (isExistedApprovalCodeExpireDate) throw new BusinessException(ErrorCode.USED_APPROVAL_CODE);
+
+        ApprovalCodeEntity occupyingUserIdApprovalCodeEntity = approvalCodeRepository.findByUserId(userId);
+        if (occupyingUserIdApprovalCodeEntity != null) {
+            String occupyingApprovalCode = occupyingUserIdApprovalCodeEntity.getApprovalCode();
+            if (!occupyingApprovalCode.equals(approvalCode)) {
+                occupyingUserIdApprovalCodeEntity.updateUserId(null);
+                approvalCodeRepository.saveAndFlush(occupyingUserIdApprovalCodeEntity);
             }
-
-            approvalCodeEntity.updateUserId(userId);
-            approvalCodeRepository.save(approvalCodeEntity);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
         }
+
+        approvalCodeEntity.updateUserId(userId);
+        approvalCodeRepository.save(approvalCodeEntity);
 
         return ResponseDto.success(HttpStatus.OK);
     }
@@ -304,62 +221,33 @@ public class AuthServiceImplement implements AuthService {
         String approvalCode = dto.getApprovalCode();
         String password = dto.getPassword();
 
-        try {
+        boolean isExistUserId = userRepository.existsByUserId(userId);
+        if (isExistUserId) throw new BusinessException(ErrorCode.EXISTS_USER_ID);
 
-            boolean isExistUserId = userRepository.existsByUserId(userId);
-            if (isExistUserId) return ResponseDto.existsUserId();
+        boolean isExistedPhoneNumber = userRepository.existsByPhoneNumber(phoneNumber);
+        if (isExistedPhoneNumber) throw new BusinessException(ErrorCode.EXISTS_USER_PHONE_NUMBER);
 
-            boolean isExistedPhoneNumber = userRepository.existsByPhoneNumber(phoneNumber);
-            if (isExistedPhoneNumber) return ResponseDto.existsUserPhoneNumber();
+        boolean isPhoneAuthVerified = phoneNumberAuthStore.isVerified(phoneNumber);
+        if (!isPhoneAuthVerified) throw new BusinessException(ErrorCode.PHONE_NUMBER_AUTH_FAILED);
 
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
+        ApprovalCodeEntity approvalCodeEntity = approvalCodeRepository.findByApprovalCodeAndUserId(approvalCode, userId);
+        if (approvalCodeEntity == null) throw new BusinessException(ErrorCode.APPROVAL_CODE_AUTH_FAILED);
 
-        try {
-            
-            boolean isPhoneAuthVerified = phoneNumberAuthStore.isVerified(phoneNumber);
-            if (!isPhoneAuthVerified) return ResponseDto.phoneNumberAuthFail();
+        approvalCodeEntity.updateExpireDate();
+        approvalCodeRepository.save(approvalCodeEntity);
 
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.redisServerError();
-        }
+        String encodedPassword = passwordEncoder.encode(password);
+        dto.setPassword(encodedPassword);
 
-        try {
-            
-            ApprovalCodeEntity approvalCodeEntity = approvalCodeRepository.findByApprovalCodeAndUserId(approvalCode, userId);
-            if (approvalCodeEntity == null) return ResponseDto.approvalCodeAuthFail();
-
-            approvalCodeEntity.updateExpireDate();
-            approvalCodeRepository.save(approvalCodeEntity);
-
-            String encodedPassword = passwordEncoder.encode(password);
-            dto.setPassword(encodedPassword);
-
-            UserEntity userEntity = new UserEntity(dto);
-            userRepository.save(userEntity);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
+        UserEntity userEntity = new UserEntity(dto);
+        userRepository.save(userEntity);
 
         return ResponseDto.success(HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<ResponseDto> logout(String userId) {
-        try {
-
-            refreshTokenStore.delete(userId);
-            
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.redisServerError();
-        }
-        
+        refreshTokenStore.delete(userId);
         return ResponseDto.success(HttpStatus.OK);
     }
     

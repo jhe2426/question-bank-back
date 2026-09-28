@@ -29,7 +29,7 @@ public class RefreshTokenStore {
             redisTemplate.opsForValue().set(key, refreshToken, REFRESH_TOKEN_EXPIRE);
         } catch (Exception exception) {
             exception.printStackTrace();
-            throw new RedisStorageException();
+            throw new RedisStorageException(exception);
         }
 
     }
@@ -45,7 +45,7 @@ public class RefreshTokenStore {
             
         } catch (Exception exception) {
             exception.printStackTrace();
-            throw new RedisStorageException();
+            throw new RedisStorageException(exception);
         }
     }
 
@@ -55,7 +55,7 @@ public class RefreshTokenStore {
             redisTemplate.delete(key);
         } catch (Exception exception) {
             exception.printStackTrace();
-            throw new RedisStorageException();
+            throw new RedisStorageException(exception);
         }
     }
 }

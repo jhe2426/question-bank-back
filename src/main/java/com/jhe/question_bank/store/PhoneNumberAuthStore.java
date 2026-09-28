@@ -35,7 +35,7 @@ public class PhoneNumberAuthStore {
 
         } catch (Exception exception) {
             exception.printStackTrace();
-            throw new RedisStorageException();
+            throw new RedisStorageException(exception);
         }
     }
 
@@ -46,7 +46,7 @@ public class PhoneNumberAuthStore {
 
         } catch (Exception exception) {
             exception.printStackTrace();
-            throw new RedisStorageException();
+            throw new RedisStorageException(exception);
         }
     }
 
@@ -61,7 +61,7 @@ public class PhoneNumberAuthStore {
 
         } catch (Exception exception) {
             exception.printStackTrace();
-            throw new RedisStorageException();
+            throw new RedisStorageException(exception);
         }
     }
 
@@ -73,7 +73,7 @@ public class PhoneNumberAuthStore {
 
         } catch (Exception exception) {
             exception.printStackTrace();
-            throw new RedisStorageException();
+            throw new RedisStorageException(exception);
         }
     }
 
@@ -85,7 +85,7 @@ public class PhoneNumberAuthStore {
 
         } catch (Exception exception) {
             exception.printStackTrace();
-            throw new RedisStorageException();
+            throw new RedisStorageException(exception);
         }
     }
 }
