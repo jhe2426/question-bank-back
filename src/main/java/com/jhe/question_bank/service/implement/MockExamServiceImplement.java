@@ -68,6 +68,7 @@ public class MockExamServiceImplement implements MockExamService {
         return GetUnitsAndChaptersResponseDto.success(unitEntities, chpaterMap);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<? super GetMockExamQuestionListResponseDto> getMockExamQuestionList(String userId, Integer chapterId, QuestionDifficulty difficulty, Boolean hasExplanation) {
         List<QuestionEntity> questionEntities = new ArrayList<>();

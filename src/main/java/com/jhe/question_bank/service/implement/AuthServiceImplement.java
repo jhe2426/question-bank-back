@@ -179,6 +179,7 @@ public class AuthServiceImplement implements AuthService {
         return ResponseDto.success(HttpStatus.CREATED);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<ResponseDto> approvalCodeVerify(ApprovalCodeVerifyRequestDto dto) {
         
