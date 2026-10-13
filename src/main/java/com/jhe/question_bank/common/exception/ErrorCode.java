@@ -71,9 +71,9 @@ public enum ErrorCode {
         ResponseMessage.NOT_EXISTS_QUESTION_GROUP
     ),
 
-    PASSWORD_INCOREECT(
+    PASSWORD_INCORRECT(
         HttpStatus.BAD_REQUEST,
-        ResponseCode.PASSWORD_INCOREECT, 
+        ResponseCode.PASSWORD_INCORRECT,
         ResponseMessage.PASSWORD_INCORRECT
     ),
 
@@ -142,6 +142,12 @@ public enum ErrorCode {
         HttpStatus.INTERNAL_SERVER_ERROR,
         ResponseCode.DATABASE_ERROR, 
         ResponseMessage.DATABASE_ERROR
+    ),
+
+    INTERNAL_SERVER_ERROR(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            ResponseCode.INTERNAL_SERVER_ERROR,
+            ResponseMessage.INTERNAL_SERVER_ERROR
     );
 
     private final HttpStatus httpStatus;

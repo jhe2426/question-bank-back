@@ -29,4 +29,5 @@ public interface ResponseMessage {
     String SMS_SEND_FAILED = "Failed to send verification code via SMS";
     String REDIS_SERVER_ERROR = "Redis server error occurred.";
     String DATABASE_ERROR = "Database error.";
+    String INTERNAL_SERVER_ERROR = "Server error.";
 }

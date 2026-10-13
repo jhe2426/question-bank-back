@@ -46,7 +46,7 @@ public class MyPageServiceImplement implements MyPageService{
         UserEntity userEntity = userRepository.findByUserId(userId);
         String userPassword = userEntity.getPassword();
         boolean isMatch = passwordEncoder.matches(currentPassword, userPassword);
-        if (!isMatch) throw new BusinessException(ErrorCode.PASSWORD_INCOREECT);
+        if (!isMatch) throw new BusinessException(ErrorCode.PASSWORD_INCORRECT);
 
         boolean isSame = passwordEncoder.matches(newPassword, userPassword);
         if (isSame) throw new BusinessException(ErrorCode.NEW_PASSWORD_SAME_AS_CURRENT);

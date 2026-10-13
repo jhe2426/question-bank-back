@@ -49,11 +49,13 @@ public class CustomExceptionHandler {
         return ResponseDto.redisServerError();
     }
 
-    @ExceptionHandler({
-            DataAccessException.class,
-            UnexpectedRollbackException.class
-    })
+    @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ResponseDto> databaseExceptionHandler() {
         return ResponseDto.databaseError();
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ResponseDto> exceptionHandler() {
+        return ResponseDto.internalServerError();
     }
 }

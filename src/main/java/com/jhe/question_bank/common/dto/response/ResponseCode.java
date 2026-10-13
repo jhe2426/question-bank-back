@@ -13,7 +13,7 @@ public interface ResponseCode {
     String QUESTION_ID_NOT_FOUND = "NQI";
     String INCORRECT_QUESTION_NOT_EXISTS = "NIQ";
     String NOT_EXISTS_QUESTION_GROUP = "NEQG";
-    String PASSWORD_INCOREECT = "PI";
+    String PASSWORD_INCORRECT = "PI";
     String NOT_PAST_EXAM_GROUP = "NPEG";
     String NEW_PASSWORD_SAME_AS_CURRENT = "SP";
 
@@ -29,4 +29,5 @@ public interface ResponseCode {
     String SMS_SEND_FAILED = "SSF";
     String REDIS_SERVER_ERROR = "RE";
     String DATABASE_ERROR = "DBE";
+    String INTERNAL_SERVER_ERROR = "ISE";
 }

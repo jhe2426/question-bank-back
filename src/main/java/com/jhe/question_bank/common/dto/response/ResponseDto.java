@@ -56,6 +56,11 @@ public class ResponseDto {
         ResponseDto body = new ResponseDto(ResponseCode.DATABASE_ERROR, ResponseMessage.DATABASE_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
+
+    public static ResponseEntity<ResponseDto> internalServerError() {
+        ResponseDto body = new ResponseDto(ResponseCode.INTERNAL_SERVER_ERROR, ResponseMessage.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+    }
     
     public static ResponseEntity<ResponseDto> error(ErrorCode errorCode) {;
         ResponseDto body = new ResponseDto(errorCode.getCode(), errorCode.getMessage());
