@@ -62,7 +62,8 @@ public class WebSecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         ArrayList<String> allowedOriginPatterns = new ArrayList<>();
-        allowedOriginPatterns.add("https://localhost:3000");
+        allowedOriginPatterns.add( "https://localhost:3000");
+        allowedOriginPatterns.add("https://question-bank-front-blue.vercel.app");
         configuration.setAllowedOrigins(allowedOriginPatterns);
 
         ArrayList<String> allowedHttpMethods = new ArrayList<>();
