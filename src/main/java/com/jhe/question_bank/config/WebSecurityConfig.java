@@ -64,6 +64,8 @@ public class WebSecurityConfig {
         ArrayList<String> allowedOriginPatterns = new ArrayList<>();
         allowedOriginPatterns.add( "https://localhost:3000");
         allowedOriginPatterns.add("https://question-bank-front-blue.vercel.app");
+        allowedOriginPatterns.add("https://question-bank-front-v2.vercel.app");
+
         configuration.setAllowedOrigins(allowedOriginPatterns);
 
         ArrayList<String> allowedHttpMethods = new ArrayList<>();
