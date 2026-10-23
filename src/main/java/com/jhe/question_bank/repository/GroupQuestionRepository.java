@@ -48,7 +48,8 @@ public interface  GroupQuestionRepository extends JpaRepository<GroupQuestionEnt
             FROM user_problem_groups UPG
             JOIN group_questions GQ ON UPG.group_id = GQ.group_id
             JOIN questions Q ON GQ.question_id = Q.question_id
-            JOIN chapters C ON Q.chapter_id = C.chapter_id
+            JOIN sections S ON Q.section_id = S.section_id
+            JOIN chapters C ON S.chapter_id = C.chapter_id
             JOIN units U ON C.unit_id = U.unit_id
             WHERE UPG.group_id = :groupId AND UPG.source_type = '기출문제'
             GROUP BY U.unit_id, U.unit_name
