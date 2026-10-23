@@ -5,9 +5,8 @@ import java.time.format.DateTimeFormatter;
 
 import com.jhe.question_bank.common.dto.request.auth.SignUpRequestDto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.jhe.question_bank.enums.Role;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +30,8 @@ public class UserEntity {
     private Integer universityId;
     private String gender;
     private String registeredAt;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     public UserEntity(SignUpRequestDto dto) {
         LocalDateTime now = LocalDateTime.now();

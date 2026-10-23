@@ -45,6 +45,7 @@ public class WebSecurityConfig {
             .csrf(CsrfConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(request -> request
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers(RequestPattern.AUTH_API + "/logout").authenticated()
                 .requestMatchers(RequestPattern.AUTH_API, RequestPattern.AUTH_API + "/**", "/api/v1/file", "/api/v1/file/**").permitAll()
                 .anyRequest().authenticated() 
