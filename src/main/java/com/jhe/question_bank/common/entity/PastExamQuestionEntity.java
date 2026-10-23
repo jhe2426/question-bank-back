@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Table(name="past_exam_questions")
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class PastExamQuestionEntity {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -21,4 +20,10 @@ public class PastExamQuestionEntity {
     private Integer questionId;
     private Integer pastExamId;
     private Integer questionOrder;
+
+    public PastExamQuestionEntity(Integer questionId, Integer pastExamId, Integer questionOrder) {
+        this.questionId = questionId;
+        this.pastExamId = pastExamId;
+        this.questionOrder = questionOrder;
+    }
 }
