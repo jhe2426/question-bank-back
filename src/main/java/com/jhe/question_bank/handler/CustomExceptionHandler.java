@@ -21,7 +21,6 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(BusinessException.class) 
     public ResponseEntity<ResponseDto> businessExceptionHandler(BusinessException exception) {
-        log.info("exception = {}", exception);
         return ResponseDto.error(exception.getErrorCode());
     }
 
@@ -54,13 +53,11 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ResponseDto> databaseExceptionHandler(DataAccessException exception) {
-        log.info("exception = {}", exception);
         return ResponseDto.databaseError();
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseDto> exceptionHandler(Exception exception) {
-        log.info("exception = {}", exception);
         return ResponseDto.internalServerError();
     }
 }
