@@ -1,5 +1,6 @@
 package com.jhe.question_bank.handler;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,11 +15,13 @@ import com.jhe.question_bank.common.exception.BusinessException;
 import com.jhe.question_bank.common.exception.CsrfException;
 import com.jhe.question_bank.common.exception.RedisStorageException;
 
+@Slf4j
 @RestControllerAdvice
 public class CustomExceptionHandler {
 
     @ExceptionHandler(BusinessException.class) 
     public ResponseEntity<ResponseDto> businessExceptionHandler(BusinessException exception) {
+        log.info("exception = {}", exception);
         return ResponseDto.error(exception.getErrorCode());
     }
 
@@ -50,12 +53,14 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<ResponseDto> databaseExceptionHandler() {
+    public ResponseEntity<ResponseDto> databaseExceptionHandler(DataAccessException exception) {
+        log.info("exception = {}", exception);
         return ResponseDto.databaseError();
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ResponseDto> exceptionHandler() {
+    public ResponseEntity<ResponseDto> exceptionHandler(Exception exception) {
+        log.info("exception = {}", exception);
         return ResponseDto.internalServerError();
     }
 }

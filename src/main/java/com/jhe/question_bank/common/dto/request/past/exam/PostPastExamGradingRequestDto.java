@@ -19,5 +19,7 @@ public class PostPastExamGradingRequestDto {
     @NotNull
     private Integer pastExamId;
     @NotNull
+    private Integer timeSpentSeconds;
+    @NotNull
     private List<PastExamUserAnswerVO> userAnswers;
 }

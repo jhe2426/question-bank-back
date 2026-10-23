@@ -20,7 +20,7 @@ public class QuestionEntity {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer questionId;
     private Integer detailExplanationId;
-    private Integer chapterId;
+    private Integer sectionId;
     private String questionType;
     private String questionText;
     private String imageUrl;
