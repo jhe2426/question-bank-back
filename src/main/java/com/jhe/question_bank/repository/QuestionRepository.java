@@ -22,21 +22,12 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Intege
 
     @Query("""
             SELECT Q.questionId FROM questions Q
-            WHERE Q.questionType = '모의고사'
+            WHERE Q.chapterId = :chapterId
+                AND questionType = '모의고사'
                 AND Q.difficulty = :difficulty
-                AND (
-                  :chapterId IS NULL
-                  OR EXISTS (
-                      SELECT S.sectionId
-                      FROM sections S
-                      WHERE S.sectionId = Q.sectionId
-                        AND S.chapterId = :chapterId
-                  )
-                )
                 AND NOT EXISTS (
-                  SELECT 1
-                  FROM userSolvedHistory USH
-                  WHERE USH.questionId = Q.questionId
+                    SELECT 1 FROM userSolvedHistory USH
+                    WHERE USH.questionId = Q.questionId
                     AND USH.userId = :userId
                     AND USH.sourceType = :sourceType
                     AND USH.sessionId = :sessionId

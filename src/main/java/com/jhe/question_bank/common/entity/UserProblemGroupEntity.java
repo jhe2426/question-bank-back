@@ -32,7 +32,6 @@ public class UserProblemGroupEntity {
     private Integer pastExamRound;
     private Integer totalScore;
     private String solvedAt;
-    private Integer timeSpentSeconds;
 
     public UserProblemGroupEntity(PostPastExamGradingRequestDto dto, String sourceType, String userId, int pastExamRound, int totalScore) {
         LocalDateTime now = LocalDateTime.now();
@@ -44,7 +43,6 @@ public class UserProblemGroupEntity {
         this.pastExamRound = pastExamRound;
         this.totalScore = totalScore;
         this.solvedAt = now.format(dateTimeFormatter);
-        this.timeSpentSeconds = dto.getTimeSpentSeconds();
     }
 
     public UserProblemGroupEntity(PostKillerExamGradingRequestDto dto, String sourceType, String userId, int totalScore) {
@@ -56,7 +54,6 @@ public class UserProblemGroupEntity {
         this.detailedType = sourceType;
         this.totalScore = totalScore;
         this.solvedAt = now.format(dateTimeFormatter);
-        this.timeSpentSeconds = dto.getTimeSpentSeconds();
     }
 
     public UserProblemGroupEntity(PostMockExamGradingRequestDto dto, String sourceType, String userId, int totalScore) {
@@ -68,7 +65,6 @@ public class UserProblemGroupEntity {
         this.detailedType = dto.getDetailedType();
         this.totalScore = totalScore;
         this.solvedAt = now.format(dateTimeFormatter);
-        this.timeSpentSeconds = dto.getTimeSpentSeconds();
     }
 
     public UserProblemGroupEntity(PostIncorrectQuestionGradingRequestDto dto, String sourceType, String userId, int totalScore) {
@@ -80,6 +76,5 @@ public class UserProblemGroupEntity {
         this.detailedType = dto.getDetailedType();
         this.totalScore = totalScore;
         this.solvedAt = now.format(dateTimeFormatter);
-        this.timeSpentSeconds = dto.getTimeSpentSeconds();
     }
 }

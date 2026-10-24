@@ -59,7 +59,7 @@ public class MyPageServiceImplement implements MyPageService{
 
     @Override
     public ResponseEntity<? super GetLearningRecordListResponseDto> getLearningRecordList(String userId) {
-        List<UserProblemGroupEntity> userProblemGroupEntities = userProblemGroupRepository.findByUserIdOrderBySolvedAtDesc(userId);
+        List<UserProblemGroupEntity> userProblemGroupEntities = userProblemGroupRepository.findByUserIdOrderBySolvedAtAsc(userId);
         return GetLearningRecordListResponseDto.success(userProblemGroupEntities);
     }
 

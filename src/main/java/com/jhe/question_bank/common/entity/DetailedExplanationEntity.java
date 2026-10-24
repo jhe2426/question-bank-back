@@ -13,15 +13,11 @@ import lombok.NoArgsConstructor;
 @Table(name="detailed_explanations")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class DetailedExplanationEntity {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer detailExplanationId;
     private String content;
     private String imageUrl;
-
-    public DetailedExplanationEntity(String content, String imageUrl) {
-        this.content = content;
-        this.imageUrl = imageUrl;
-    }
 }

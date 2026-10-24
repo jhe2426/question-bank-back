@@ -19,7 +19,5 @@ public class PostIncorrectQuestionGradingRequestDto {
     @NotBlank
     private String detailedType;
     @NotNull
-    private Integer timeSpentSeconds;
-    @NotNull
     private List<UserAnswerVO> userAnswers;
 }

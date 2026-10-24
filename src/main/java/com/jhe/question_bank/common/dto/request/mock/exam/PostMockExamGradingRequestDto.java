@@ -19,7 +19,5 @@ public class PostMockExamGradingRequestDto {
     @NotNull
     private Integer sessionId;
     @NotNull
-    private Integer timeSpentSeconds;
-    @NotNull
     private List<UserAnswerVO> userAnswers;
 }
